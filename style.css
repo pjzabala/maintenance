@@ -9,17 +9,36 @@ html {
 body.equipment-status-page .navbar {
   color: black;
 }
-body.equipment-status-page .navbar .nav-item,
-body.equipment-status-page a {
+body.equipment-status-page
+  .navbar
+  .nav-item:not(.dropdown *, .dropdown-wrapper *),
+body.equipment-status-page:not(.dropdown *, .dropdown-wrapper *) a {
   color: black;
   transition: color 0.3s ease;
 }
 body.equipment-status-page .navbar.scrolled {
   color: white;
 }
-body.equipment-status-page .navbar.scrolled .nav-item,
-body.equipment-status-page a {
+body.equipment-status-page
+  .navbar.scrolled
+  .nav-item:not(.dropdown *, .dropdown-wrapper *),
+body.equipment-status-page:not(.dropdown *, .dropdown-wrapper *) a {
   color: white;
+}
+body.equipment-status-page .dropdown a,
+body.equipment-status-page .dropdown p {
+  color: white !important;
+}
+
+.nav-item:hover,
+.dropdown p:hover,
+.dropdown a:hover {
+  color: #00bcd4 !important;
+}
+.nav-item:hover,
+.dropdown p,
+.dropdown a {
+  transition: color 0.3s ease;
 }
 
 html {
