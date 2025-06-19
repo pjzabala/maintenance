@@ -6,28 +6,59 @@ html {
   overflow-x: hidden;
 }
 
-body.equipment-status-page .navbar {
-  color: black;
-}
-body.equipment-status-page
-  .navbar
-  .nav-item:not(.dropdown *, .dropdown-wrapper *),
-body.equipment-status-page:not(.dropdown *, .dropdown-wrapper *) a {
+/* Style for nav title text (like nav-item but no hover) */
+body.equipment-status-page .navbar .nav-title {
+  font-size: 20px;
+  font-weight: bold;
   color: black;
   transition: color 0.3s ease;
 }
-body.equipment-status-page .navbar.scrolled {
+
+/* Change to white when scrolled */
+body.equipment-status-page .navbar.scrolled .nav-title {
   color: white;
 }
-body.equipment-status-page
-  .navbar.scrolled
-  .nav-item:not(.dropdown *, .dropdown-wrapper *),
-body.equipment-status-page:not(.dropdown *, .dropdown-wrapper *) a {
-  color: white;
+
+/* Default state (not scrolled) — black nav items, white dropdown */
+body.equipment-status-page .navbar .nav-item,
+body.equipment-status-page .navbar a {
+  color: black;
+  transition: color 0.3s ease;
 }
+
+/* Dropdown items stay white */
 body.equipment-status-page .dropdown a,
 body.equipment-status-page .dropdown p {
   color: white !important;
+  transition: color 0.3s ease;
+}
+
+/* Hover on nav and dropdown (both states) */
+body.equipment-status-page .navbar .nav-item:hover,
+body.equipment-status-page .navbar a:hover,
+body.equipment-status-page .navbar.scrolled .nav-item:hover,
+body.equipment-status-page .navbar.scrolled a:hover,
+body.equipment-status-page .dropdown a:hover,
+body.equipment-status-page .dropdown p:hover {
+  color: #00bcd4 !important;
+}
+
+/* When scrolled — white nav items */
+body.equipment-status-page .navbar.scrolled .nav-item,
+body.equipment-status-page .navbar.scrolled a {
+  color: white;
+}
+
+/* Keep dropdown items always white and hover blue */
+body.equipment-status-page .dropdown a,
+body.equipment-status-page .dropdown p {
+  color: white;
+  transition: color 0.3s ease;
+}
+
+body.equipment-status-page .dropdown a:hover,
+body.equipment-status-page .dropdown p:hover {
+  color: #00bcd4;
 }
 
 .nav-item:hover,
