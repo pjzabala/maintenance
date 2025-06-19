@@ -9,13 +9,16 @@ html {
 body.equipment-status-page .navbar {
   color: black;
 }
-body.equipment-status-page .navbar a {
+body.equipment-status-page .navbar .nav-item,
+body.equipment-status-page a {
   color: black;
+  transition: color 0.3s ease;
 }
 body.equipment-status-page .navbar.scrolled {
   color: white;
 }
-body.equipment-status-page .navbar.scrolled a {
+body.equipment-status-page .navbar.scrolled .nav-item,
+body.equipment-status-page a {
   color: white;
 }
 
