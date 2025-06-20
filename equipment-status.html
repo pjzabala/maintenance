@@ -61,7 +61,7 @@
       </div>
     </header>
 
-    <main>
+    <main class="equipment-status-page">
       <!-- PAGE TITLE -->
       <div class="page-title">NARRA THERMAL 1 EQUIPMENT STATUS</div>
 
@@ -129,6 +129,24 @@
       }
     </script>
 
+    <script>
+      const navbar = document.getElementById("navbar");
+      window.addEventListener("scroll", () => {
+        navbar.classList.toggle("scrolled", window.scrollY > 50);
+      });
+
+      function showTab(event, tabId) {
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((div) => (div.style.display = "none"));
+        document
+          .querySelectorAll(".tab-button")
+          .forEach((btn) => btn.classList.remove("active"));
+        document.getElementById(tabId).style.display = "block";
+        event.target.classList.add("active");
+      }
+    </script>
+
     <!-- FOOTER -->
     <footer class="footer">
       <div class="footer-content">
@@ -159,23 +177,5 @@
         <p>&copy; 2025 Palawan Maintenance. All rights reserved.</p>
       </div>
     </footer>
-
-    <script>
-      const navbar = document.getElementById("navbar");
-      window.addEventListener("scroll", () => {
-        navbar.classList.toggle("scrolled", window.scrollY > 50);
-      });
-
-      function showTab(event, tabId) {
-        document
-          .querySelectorAll(".tab-content")
-          .forEach((div) => (div.style.display = "none"));
-        document
-          .querySelectorAll(".tab-button")
-          .forEach((btn) => btn.classList.remove("active"));
-        document.getElementById(tabId).style.display = "block";
-        event.target.classList.add("active");
-      }
-    </script>
   </body>
 </html>

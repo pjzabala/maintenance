@@ -10,7 +10,7 @@ html {
   scroll-behavior: smooth;
 }
 
-main {
+body:not(.equipment-status-page) main {
   background-color: darkblue;
 }
 
@@ -303,7 +303,7 @@ iframe {
   text-align: center;
   font-size: 24px;
   font-weight: bold;
-  color: #333;
+  color: #000000;
   font-family: "Oswald", sans-serif;
 }
 .navbar.scrolled .nav-left span,
