@@ -26,15 +26,15 @@ body:not(.equipment-status-page) main {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  min-height: 500px;
+  min-height: 1000px;
 }
 
 .vision-block {
   background-image: url(all.jpg);
   background-size: cover;
-  background-position: center -600px;
+  background-position: center;
   background-repeat: no-repeat;
-  min-height: 500px;
+  min-height: 1000px;
 }
 
 /* Navbar */
@@ -199,10 +199,15 @@ body:not(.equipment-status-page) main {
   text-decoration: none;
   transition: all 0.3s;
   font-size: 0.9rem;
-  background: rgba(255, 255, 255, 0.05);
   width: 200px; /* ✅ Same width for all buttons */
   text-align: center; /* ✅ Center text inside */
   border-radius: 8px; /* ✅ Slight curve on edges */
+
+  background-color: rgba(255, 255, 255, 0.1); /* Light transparent */
+  backdrop-filter: blur(5px); /* Blur effect */
+  -webkit-backdrop-filter: blur(10px); /* Safari support */
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Optional subtle border */
+  transition: all 0.3s ease;
 }
 
 .hero-btn:hover {
@@ -234,7 +239,7 @@ body:not(.equipment-status-page) main {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   margin: 60px auto;
   max-width: 1200px;
-  padding: 80px 60px;
+  padding: 40px 60px;
   color: white;
   position: relative;
   overflow: hidden;
@@ -323,44 +328,6 @@ iframe {
 .navbar.scrolled .nav-right > .nav-item,
 .navbar.scrolled .nav-right > .nav-item > a {
   color: white !important;
-}
-
-.tabs {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  padding: 10px 20px;
-  margin: 20px auto;
-  max-width: 1000px;
-}
-
-.tab-button {
-  padding: 10px 14px;
-  border: 1px solid #aaa;
-  border-radius: 6px;
-  background-color: #f2f2f2;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.tab-button.active {
-  background-color: #00bcd4;
-  color: white;
-  border-color: #00bcd4;
-}
-
-.tab-button:hover {
-  background-color: #00bcd4;
-  color: white;
-}
-
-.tab-content {
-  max-width: 1200px;
-  margin: auto;
-  padding: 5px;
 }
 
 @keyframes bounce {

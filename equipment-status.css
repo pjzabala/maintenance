@@ -63,3 +63,41 @@ body.equipment-status-page .dropdown p:hover {
 .dropdown a {
   transition: color 0.3s ease;
 }
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 20px;
+  margin: 20px auto;
+  max-width: 1000px;
+}
+
+.tab-button {
+  padding: 10px 14px;
+  border: 1px solid #aaa;
+  border-radius: 6px;
+  background-color: #f2f2f2;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tab-button.active {
+  background-color: #00bcd4;
+  color: white;
+  border-color: #00bcd4;
+}
+
+.tab-button:hover {
+  background-color: #00bcd4;
+  color: white;
+}
+
+.tab-content {
+  max-width: 1200px;
+  margin: auto;
+  padding: 5px;
+}
