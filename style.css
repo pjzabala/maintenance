@@ -14,6 +14,29 @@ body:not(.equipment-status-page) main {
   background-color: darkblue;
 }
 
+.hero-section {
+  background-image: url(https://lh4.googleusercontent.com/rfelYTgQZTlT4P-bGexp16BwovsKRk2_JDbDlAF1KapXZTP3sMRvwRyxjW00dAC_uuZKHDEs4sV_ErA40DFAUv0);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.mission-block {
+  background-image: url(bg.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 500px;
+}
+
+.vision-block {
+  background-image: url(all.jpg);
+  background-size: cover;
+  background-position: center -600px;
+  background-repeat: no-repeat;
+  min-height: 500px;
+}
+
 /* Navbar */
 .navbar {
   position: fixed;
@@ -204,17 +227,20 @@ body:not(.equipment-status-page) main {
 }
 
 .card {
-  background: rgba(255, 255, 255, 0); /* Glass-like transparency */
-  backdrop-filter: blur(1px); /* Frosted glass blur */
+  background: rgba(0, 0, 0, 0.1); /* Glass-like transparency */
+  backdrop-filter: blur(2px); /* Frosted glass blur */
   -webkit-backdrop-filter: blur(1px); /* Safari support */
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   margin: 60px auto;
-  max-width: 1000px;
-  padding: 1rem;
+  max-width: 1200px;
+  padding: 80px 60px;
   color: white;
   position: relative;
   overflow: hidden;
+  font-family: "Lato", sans-serif; /* Use a clean, readable font */
+  font-size: 1.25rem; /* Increase base font size */
+  text-align: center;
 }
 
 .card::before {
@@ -228,11 +254,13 @@ body:not(.equipment-status-page) main {
   border-radius: 20px;
 }
 
-.card h2,
+.card h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  font-family: "Oswald", sans-serif;
+}
 .card p {
-  position: relative;
-  z-index: 1;
-  text-align: center;
+  font-size: 1.25rem;
 }
 
 .content-block {
@@ -240,21 +268,6 @@ body:not(.equipment-status-page) main {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.mission-block {
-  background-image: url(https://lh5.googleusercontent.com/1xFPUqeo6bOaG1TmE_gpqqo88PAVYqKk4wvmI4paRXs86awQXykgKveICPqA3x_loEignrUzEcJAkLZQ2JKTokg);
-}
-
-.vision-block {
-  background-image: url(https://lh4.googleusercontent.com/Fql3fmD9B6zfSsj9YToa61IWPkfdZu4G-QWNoracdjFMWi-PY6Y4naMShEV79hMmt-VijcAdhkXBYTni0Ch8NWE);
-}
-
-.mission-block,
-.vision-block {
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
 }
 
 .scroll-arrow {
