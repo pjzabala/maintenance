@@ -1,7 +1,8 @@
+// src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
-import NarraThermal from '@/views/NarraThermal.vue';
-import AborlanBunker from '@/views/AborlanBunker.vue';
 import HomeView from '@/views/HomeView.vue';
+import NarraThermal1 from '@/views/NarraThermal.vue';
+import AborlanBunker1 from '@/views/AborlanBunker.vue';
 
 
 const routes = [
@@ -13,7 +14,7 @@ const routes = [
   {
     path: '/narra-thermal1',
     name: 'NarraThermal',
-    component: NarraThermal,
+    component: NarraThermal1,
   },
   {
     path: '/equipment-status',
@@ -23,7 +24,7 @@ const routes = [
   {
     path: '/aborlan-bunker1',
     name: 'AborlanBunker',
-    component: AborlanBunker,
+    component: AborlanBunker1,
   },
   {
     path: '/hs-diesel',
