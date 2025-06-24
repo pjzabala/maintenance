@@ -204,8 +204,8 @@ body:not(.equipment-status-page) main {
   border-radius: 8px; /* ✅ Slight curve on edges */
 
   background-color: rgba(255, 255, 255, 0.1); /* Light transparent */
-  backdrop-filter: blur(5px); /* Blur effect */
-  -webkit-backdrop-filter: blur(10px); /* Safari support */
+  -webkit-backdrop-filter: blur(10px); /* Blur effect */
+  backdrop-filter: blur(5px); /* Safari support */
   border: 1px solid rgba(255, 255, 255, 0.3); /* Optional subtle border */
   transition: all 0.3s ease;
 }
@@ -233,8 +233,8 @@ body:not(.equipment-status-page) main {
 
 .card {
   background: rgba(0, 0, 0, 0.1); /* Glass-like transparency */
-  backdrop-filter: blur(2px); /* Frosted glass blur */
-  -webkit-backdrop-filter: blur(1px); /* Safari support */
+  -webkit-backdrop-filter: blur(1px); /* Frosted glass blur */
+  backdrop-filter: blur(2px); /* Safari support */
   border-radius: 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   margin: 60px auto;
