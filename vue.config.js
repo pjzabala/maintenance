@@ -3,5 +3,5 @@ module.exports = defineConfig({
   transpileDependencies: true
 })
 module.exports = {
-  publicPath: '/maintenance/'
+  publicPath: '/HomeView.vue/'
 }
