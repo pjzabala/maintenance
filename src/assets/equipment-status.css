@@ -1,4 +1,4 @@
-/* Style for nav title text (like nav-item but no hover) */
+/* NAVBAR STYLE OVERRIDES FOR EQUIPMENT STATUS PAGE */
 body.equipment-status-page .navbar .nav-title {
   font-size: 20px;
   font-weight: bold;
@@ -6,51 +6,34 @@ body.equipment-status-page .navbar .nav-title {
   transition: color 0.3s ease;
 }
 
-/* Change to white when scrolled */
 body.equipment-status-page .navbar.scrolled .nav-title {
   color: white;
 }
 
-/* Default state (not scrolled) — black nav items, white dropdown */
 body.equipment-status-page .navbar .nav-item,
 body.equipment-status-page .navbar a {
   color: black;
   transition: color 0.3s ease;
 }
 
-/* Dropdown items stay white */
+body.equipment-status-page .navbar.scrolled .nav-item,
+body.equipment-status-page .navbar.scrolled a {
+  color: white;
+}
+
 body.equipment-status-page .dropdown a,
 body.equipment-status-page .dropdown p {
   color: white !important;
   transition: color 0.3s ease;
 }
 
-/* Hover on nav and dropdown (both states) */
+body.equipment-status-page .dropdown a:hover,
+body.equipment-status-page .dropdown p:hover,
 body.equipment-status-page .navbar .nav-item:hover,
 body.equipment-status-page .navbar a:hover,
 body.equipment-status-page .navbar.scrolled .nav-item:hover,
-body.equipment-status-page .navbar.scrolled a:hover,
-body.equipment-status-page .dropdown a:hover,
-body.equipment-status-page .dropdown p:hover {
+body.equipment-status-page .navbar.scrolled a:hover {
   color: #00bcd4 !important;
-}
-
-/* When scrolled — white nav items */
-body.equipment-status-page .navbar.scrolled .nav-item,
-body.equipment-status-page .navbar.scrolled a {
-  color: white;
-}
-
-/* Keep dropdown items always white and hover blue */
-body.equipment-status-page .dropdown a,
-body.equipment-status-page .dropdown p {
-  color: white;
-  transition: color 0.3s ease;
-}
-
-body.equipment-status-page .dropdown a:hover,
-body.equipment-status-page .dropdown p:hover {
-  color: #00bcd4;
 }
 
 .nav-item:hover,
@@ -58,12 +41,14 @@ body.equipment-status-page .dropdown p:hover {
 .dropdown a:hover {
   color: #00bcd4 !important;
 }
+
 .nav-item:hover,
 .dropdown p,
 .dropdown a {
   transition: color 0.3s ease;
 }
 
+/* TABS */
 .tabs {
   display: flex;
   flex-wrap: wrap;
@@ -81,7 +66,6 @@ body.equipment-status-page .dropdown p:hover {
   background-color: #f2f2f2;
   font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 

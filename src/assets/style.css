@@ -60,6 +60,23 @@ body:not(.equipment-status-page) main {
   background-color: rgba(0, 0, 0, 0.9); /* Dark when scrolled */
 }
 
+/* Remove default blue color and underline from links */
+.navbar a {
+  color: inherit; /* inherit color from parent (usually white or black) */
+  text-decoration: none; /* remove underline */
+}
+
+/* Optional: Style navbar links manually */
+.navbar a.nav-item {
+  color: white; /* or any color you prefer */
+  font-weight: bold;
+  padding: 10px;
+}
+
+.navbar a.nav-item:hover {
+  text-decoration: underline; /* optional hover effect */
+}
+
 .nav-left {
   display: flex;
   align-items: center;
