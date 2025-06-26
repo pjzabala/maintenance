@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Palawan Maintenance</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="mobile.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Oswald:wght@300&display=swap"
       rel="stylesheet"
@@ -15,6 +16,11 @@
     <header>
       <div class="navbar" id="navbar">
         <div class="nav-left">
+          <!-- Hamburger Menu Icon -->
+          <div class="hamburger" id="hamburger">
+            &#9776;
+            <!-- Unicode hamburger icon -->
+          </div>
           <a href="index.html">
             <img
               src="https://www.dmciholdings.com/storage/app/media/2023/Investment/New/fdmci-powertransparentnew0331.png"
@@ -22,12 +28,6 @@
             />
           </a>
           <span>PALAWAN MAINTENANCE</span>
-        </div>
-
-        <!-- Hamburger Menu Icon -->
-        <div class="hamburger" id="hamburger">
-          &#9776;
-          <!-- Unicode hamburger icon -->
         </div>
 
         <!-- Navbar Items -->
@@ -140,6 +140,44 @@
       // Toggle mobile nav menu
       hamburger.addEventListener("click", () => {
         navRight.classList.toggle("active");
+      });
+      document.addEventListener("click", function (event) {
+        const isClickInsideMenu = navRight.contains(event.target);
+        const isClickOnHamburger = hamburger.contains(event.target);
+
+        if (!isClickInsideMenu && !isClickOnHamburger) {
+          navRight.classList.remove("active");
+        }
+      });
+
+      //Show/Hide dropdown
+      document.addEventListener("DOMContentLoaded", function () {
+        const dropdownWrappers = document.querySelectorAll(".dropdown-wrapper");
+
+        dropdownWrappers.forEach((wrapper) => {
+          const dropdown = wrapper.querySelector(".dropdown");
+
+          // Toggle dropdown on click
+          wrapper.addEventListener("click", (e) => {
+            e.stopPropagation();
+
+            // Close all other dropdowns
+            document.querySelectorAll(".dropdown").forEach((d) => {
+              if (d !== dropdown) d.style.display = "none";
+            });
+
+            // Toggle current dropdown
+            dropdown.style.display =
+              dropdown.style.display === "block" ? "none" : "block";
+          });
+        });
+
+        // Close all dropdowns when clicking outside
+        document.addEventListener("click", () => {
+          document.querySelectorAll(".dropdown").forEach((dropdown) => {
+            dropdown.style.display = "none";
+          });
+        });
       });
     </script>
   </body>

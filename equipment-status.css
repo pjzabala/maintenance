@@ -41,6 +41,12 @@ body.equipment-status-page .navbar.scrolled a {
   color: white;
 }
 
+/* Ensure nav items are white in mobile view when nav-right is active */
+body.equipment-status-page .nav-right.active .nav-item,
+body.equipment-status-page .nav-right.active a {
+  color: white;
+}
+
 /* Keep dropdown items always white and hover blue */
 body.equipment-status-page .dropdown a,
 body.equipment-status-page .dropdown p {

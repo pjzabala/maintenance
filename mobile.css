@@ -1,0 +1,54 @@
+/* Hamburger Style */
+.hamburger {
+  display: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: white;
+  padding-right: 20px;
+  margin-right: 10px;
+}
+
+/* Mobile Responsive Nav */
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  .nav-right {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    background: rgba(0, 0, 0, 0.95);
+    width: 100%;
+    padding: 20px;
+    text-align: left;
+    gap: 15px;
+  }
+
+  .nav-left {
+    flex: 1;
+  }
+
+  .nav-right.active {
+    display: flex;
+  }
+
+  .dropdown-wrapper:hover .dropdown {
+    display: block; /* Still needed */
+    position: relative;
+    box-shadow: none;
+  }
+
+  .dropdown {
+    position: relative;
+    background: none;
+    box-shadow: none;
+    padding-left: 10px;
+  }
+
+  .dropdown p {
+    padding: 5px 0;
+  }
+}

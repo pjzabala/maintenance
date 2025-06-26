@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Equipment Status</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="mobile.css" />
     <link rel="stylesheet" href="equipment-status.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Oswald:wght@300&display=swap"
@@ -16,6 +17,11 @@
     <header>
       <div class="navbar" id="navbar">
         <div class="nav-left">
+          <!-- Hamburger Menu Icon -->
+          <div class="hamburger" id="hamburger">
+            &#9776;
+            <!-- Unicode hamburger icon -->
+          </div>
           <a href="index.html">
             <img
               src="https://www.dmciholdings.com/storage/app/media/2023/Investment/New/fdmci-powertransparentnew0331.png"
@@ -23,12 +29,6 @@
             />
           </a>
           <span class="nav-title">PALAWAN MAINTENANCE</span>
-        </div>
-
-        <!-- Hamburger Menu Icon -->
-        <div class="hamburger" id="hamburger">
-          &#9776;
-          <!-- Unicode hamburger icon -->
         </div>
 
         <!-- Navbar Items -->
@@ -129,24 +129,6 @@
       }
     </script>
 
-    <script>
-      const navbar = document.getElementById("navbar");
-      window.addEventListener("scroll", () => {
-        navbar.classList.toggle("scrolled", window.scrollY > 50);
-      });
-
-      function showTab(event, tabId) {
-        document
-          .querySelectorAll(".tab-content")
-          .forEach((div) => (div.style.display = "none"));
-        document
-          .querySelectorAll(".tab-button")
-          .forEach((btn) => btn.classList.remove("active"));
-        document.getElementById(tabId).style.display = "block";
-        event.target.classList.add("active");
-      }
-    </script>
-
     <!-- FOOTER -->
     <footer class="footer">
       <div class="footer-content">
@@ -177,5 +159,64 @@
         <p>&copy; 2025 Palawan Maintenance. All rights reserved.</p>
       </div>
     </footer>
+
+    <script>
+      const navbar = document.getElementById("navbar");
+      window.addEventListener("scroll", () => {
+        navbar.classList.toggle("scrolled", window.scrollY > 50);
+      });
+
+      function showTab(event, tabId) {
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((div) => (div.style.display = "none"));
+        document
+          .querySelectorAll(".tab-button")
+          .forEach((btn) => btn.classList.remove("active"));
+        document.getElementById(tabId).style.display = "block";
+        event.target.classList.add("active");
+      }
+      // Toggle mobile nav menu
+      document.addEventListener("DOMContentLoaded", function () {
+        const hamburger = document.getElementById("hamburger");
+        const navRight = document.querySelector(".nav-right");
+
+        // Toggle mobile nav menu
+        hamburger.addEventListener("click", () => {
+          navRight.classList.toggle("active");
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener("click", function (event) {
+          const isClickInsideMenu = navRight.contains(event.target);
+          const isClickOnHamburger = hamburger.contains(event.target);
+
+          if (!isClickInsideMenu && !isClickOnHamburger) {
+            navRight.classList.remove("active");
+          }
+        });
+
+        // Dropdown logic
+        const dropdownWrappers = document.querySelectorAll(".dropdown-wrapper");
+        dropdownWrappers.forEach((wrapper) => {
+          const dropdown = wrapper.querySelector(".dropdown");
+
+          wrapper.addEventListener("click", (e) => {
+            e.stopPropagation();
+            document.querySelectorAll(".dropdown").forEach((d) => {
+              if (d !== dropdown) d.style.display = "none";
+            });
+            dropdown.style.display =
+              dropdown.style.display === "block" ? "none" : "block";
+          });
+        });
+
+        document.addEventListener("click", () => {
+          document.querySelectorAll(".dropdown").forEach((dropdown) => {
+            dropdown.style.display = "none";
+          });
+        });
+      });
+    </script>
   </body>
 </html>
