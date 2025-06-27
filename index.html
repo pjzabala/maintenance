@@ -226,7 +226,7 @@
               <img src="png/BIONA.png" alt="John Mark Biona" />
               <p>
                 <strong>JOHN MARK L. BIONA</strong><br />
-                <small>&C Maintenance Supervisor</small>
+                <small>I&C Maintenance Supervisor</small>
               </p>
             </div>
 
@@ -238,7 +238,7 @@
               <img src="png/BIONA.png" alt="John Mark Biona" />
               <p>
                 <strong>JOHN MARK L. BIONA</strong><br />
-                <small>&C Maintenance Supervisor</small>
+                <small>I&C Maintenance Supervisor</small>
               </p>
             </div>
 
@@ -433,7 +433,7 @@
               {
                 name: "GERALD L. TAGARO",
                 role: "Electrical Planning Engineer (Reliever)",
-                img: "png/JUANERIO.png",
+                img: "png/TAGARO.png",
               },
             ],
           },
@@ -652,6 +652,7 @@
         function showTeam(personId) {
           const teamTitle = document.getElementById("teamTitle");
           const teamGrid = document.getElementById("teamGrid");
+          const teamDisplay = document.getElementById("teamDisplay");
 
           const person = teamData[personId];
           if (!person || !person.members) {
@@ -660,24 +661,24 @@
             return;
           }
 
-          // Set title
           teamTitle.textContent = person.title;
 
-          // Set team members
+          // Build with animation delay per card
           teamGrid.innerHTML = person.members
-            .map(
-              (m) => `
-            <div class="team-card" data-id="${
-              m.id || personId
-            }" onclick="handleTeamCardClick(this)">
-              <img src="${m.img}" alt="${m.name}" />
-              <div class="team-info">
-                <strong>${m.name}</strong><br/>
-                <span>${m.role}</span>
-              </div>
-            </div>
-          `
-            )
+            .map((m, i) => {
+              const delay = i * 100; // 100ms stagger
+              return `
+        <div class="team-card" style="animation-delay: ${delay}ms" data-id="${
+                m.id || personId
+              }" onclick="handleTeamCardClick(this)">
+          <img src="${m.img}" alt="${m.name}" />
+          <div class="team-info">
+            <strong>${m.name}</strong><br/>
+            <span>${m.role}</span>
+          </div>
+        </div>
+      `;
+            })
             .join("");
         }
 

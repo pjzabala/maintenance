@@ -64,7 +64,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 400px;
+  max-width: 250px;
 }
 
 .carousel-item {
@@ -72,12 +72,22 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  transition: all 0.3s ease;
   cursor: pointer;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: all 0.4s ease;
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .carousel-item.active {
   display: flex;
+  opacity: 1;
+  transform: scale(1);
+  z-index: 1;
+  pointer-events: auto;
+  position: relative;
 }
 
 .carousel-item:hover {
@@ -93,7 +103,7 @@
 
 .carousel-item p {
   margin-top: 10px;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
 }
 
 /* Team Display Styles */
@@ -115,8 +125,7 @@
 
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* Four columns */
-  gap: 20px;
+  grid-template-columns: repeat(7, 1fr); /* Four columns */
   width: 100%;
   max-width: 1200px; /* Limit overall width */
   margin: 0 auto; /* Center the whole block */
@@ -124,31 +133,40 @@
 }
 
 .team-card {
-  padding: 10px;
+  padding: 1px;
   text-align: center;
   width: 100%; /* Let grid column width control it */
   max-width: 250px; /* Optional: limit max card width */
   color: white;
   cursor: pointer;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .team-card img {
-  width: 100%;
-  height: 380px;
+  width: 150px;
+  height: 225px;
   object-fit: cover;
   object-position: top; /* or center */
   border-radius: 8px;
 }
 
 .team-info {
-  margin-top: 10px;
-  font-size: 0.9rem;
+  margin-top: 1px;
+  font-size: 0.8rem;
 }
 
 #teamTitle {
   font-size: 2rem; /* Adjust size as needed */
   font-weight: bold;
-  margin-bottom: 20px;
   text-align: center;
 }
 
@@ -166,6 +184,13 @@
   margin: 0 5px;
   border-radius: 6px;
   cursor: pointer;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.carousel-controls button:hover {
+  transform: scale(1.2) translateY(-2px);
+  color: #007bff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 @media (max-width: 1200px) {
