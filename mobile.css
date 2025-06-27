@@ -51,4 +51,18 @@
   .dropdown p {
     padding: 5px 0;
   }
+
+  .carousel {
+    width: 90%;
+    height: auto;
+  }
+
+  .carousel-item img {
+    height: auto;
+    max-height: 240px;
+  }
+  .team-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+  }
 }

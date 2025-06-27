@@ -116,26 +116,144 @@
 
       <!-- CAROUSEL -->
       <section class="org-carousel-section">
-        <h2>Table of Organization</h2>
-        <div class="carousel" id="orgCarousel">
-          <div class="carousel-item active">
-            <img src="images/person1.jpg" alt="Person 1" />
-            <p><strong>Engr. Juan Dela Cruz</strong><br />Plant Manager</p>
-          </div>
-          <div class="carousel-item">
-            <img src="images/person2.jpg" alt="Person 2" />
-            <p><strong>Maria Santos</strong><br />Maintenance Supervisor</p>
-          </div>
-          <div class="carousel-item">
-            <img src="images/person3.jpg" alt="Person 3" />
-            <p><strong>Carlos Reyes</strong><br />Operations Lead</p>
-          </div>
-          <!-- Add more items as needed -->
+        <div class="org-heading">
+          <h1>DMCI Palawan Power Corporation</h1>
         </div>
+        <div class="org-container">
+          <!-- LEFT: Carousel -->
+          <div class="carousel" id="orgCarousel">
+            <div
+              class="carousel-item active"
+              data-id="sison"
+              onclick="handleCarouselClick(this)"
+            >
+              <img src="png/SISON.png" alt="Jose Sison" />
+              <p>
+                <strong>JOSE BERNABE B. SISON</strong><br />
+                <small>Superintendent</small>
+              </p>
+            </div>
 
-        <div class="carousel-controls">
-          <button onclick="prevSlide()">❮</button>
-          <button onclick="nextSlide()">❯</button>
+            <div
+              class="carousel-item"
+              data-id="salazar"
+              onclick="handleCarouselClick(this)"
+            >
+              <img src="png/SALAZAR.png" alt="Ellazar Salazar" />
+              <p>
+                <strong>ELLAZAR P. SALAZAR</strong><br />
+                <small>Maintenance Planning Supervisor</small>
+              </p>
+            </div>
+
+            <div
+              class="carousel-item"
+              data-id="salazar2"
+              onclick="handleCarouselClick(this)"
+            >
+              <img src="png/SALAZAR.png" alt="Ellazar Salazar" />
+              <p>
+                <strong>ELLAZAR P. SALAZAR</strong><br />
+                <small>Maintenance Planning Supervisor</small>
+              </p>
+            </div>
+
+            <div
+              class="carousel-item"
+              data-id="bandiola"
+              onclick="handleCarouselClick(this)"
+            >
+              <img src="png/BANDIOLA.png" alt="Raymark Bandiola" />
+              <p>
+                <strong>RAYMARK P. BANDIOLA</strong><br />
+                <small>Mechanical Maintenance Supervisor, DPTPP</small>
+              </p>
+            </div>
+
+            <div
+              class="carousel-item"
+              data-id="bandiola2"
+              onclick="handleCarouselClick(this)"
+            >
+              <img src="png/BANDIOLA.png" alt="Raymark Bandiola" />
+              <p>
+                <strong>RAYMARK P. BANDIOLA</strong><br />
+                <small>Mechanical Maintenance Supervisor, DPTPP</small>
+              </p>
+            </div>
+
+            <div
+              class="carousel-item"
+              data-id="borlagdatan"
+              onclick="handleCarouselClick(this)"
+            >
+              <img src="png/BORLAGDATAN.png" alt="Arvin Borlagdatan" />
+              <p>
+                <strong>ARVIN A. BORLAGDATAN</strong><br />
+                <small>Maintenance Supervisor, ABPP</small>
+              </p>
+            </div>
+
+            <div
+              class="carousel-item"
+              data-id="palay"
+              onclick="handleCarouselClick(this)"
+            >
+              <img src="png/PALAY.png" alt="Kevin Palay" />
+              <p>
+                <strong>Kevin Jezer R. Palay</strong><br />
+                <small>Maintenance Supervisor, DPTPP</small>
+              </p>
+            </div>
+
+            <div
+              class="carousel-item"
+              data-id="catbagan"
+              onclick="handleCarouselClick(this)"
+            >
+              <img src="png/CATBAGAN.png" alt="Ernesto Catbagan" />
+              <p>
+                <strong>ERNESTO L. CATBAGAN</strong><br />
+                <small>Maintenance Supervisor, ABPP</small>
+              </p>
+            </div>
+
+            <div
+              class="carousel-item"
+              data-id="biona"
+              onclick="handleCarouselClick(this)"
+            >
+              <img src="png/BIONA.png" alt="John Mark Biona" />
+              <p>
+                <strong>JOHN MARK L. BIONA</strong><br />
+                <small>&C Maintenance Supervisor</small>
+              </p>
+            </div>
+
+            <div
+              class="carousel-item"
+              data-id="biona2"
+              onclick="handleCarouselClick(this)"
+            >
+              <img src="png/BIONA.png" alt="John Mark Biona" />
+              <p>
+                <strong>JOHN MARK L. BIONA</strong><br />
+                <small>&C Maintenance Supervisor</small>
+              </p>
+            </div>
+
+            <!-- ✅ OUTSIDE org-container -->
+            <div class="carousel-controls">
+              <button onclick="prevSlide()">❮</button>
+              <button onclick="nextSlide()">❯</button>
+            </div>
+          </div>
+
+          <!-- RIGHT: Team Display -->
+          <div class="team-display" id="teamDisplay">
+            <h3 id="teamTitle">Select a person to view their team.</h3>
+            <div class="team-grid" id="teamGrid"></div>
+          </div>
         </div>
       </section>
     </main>
@@ -173,93 +291,441 @@
 
     <a href="#" class="back-to-top" title="Back to top">⬆</a>
 
-    <!-- NAVBAR SCROLL BEHAVIOR -->
+    <!-- NAVBAR SCROLL BEHAVIOR & INTERACTIONS -->
     <script>
-      const navbar = document.getElementById("navbar");
-      const backToTop = document.querySelector(".back-to-top");
-      const hamburger = document.getElementById("hamburger");
-      const navRight = document.querySelector(".nav-right");
+      document.addEventListener("DOMContentLoaded", () => {
+        const navbar = document.getElementById("navbar");
+        const backToTop = document.querySelector(".back-to-top");
+        const hamburger = document.getElementById("hamburger");
+        const navRight = document.querySelector(".nav-right");
+        const teamDisplay = document.getElementById("teamDisplay");
 
-      // Toggle navbar styles on scroll
-      window.addEventListener("scroll", () => {
-        if (window.scrollY > 50) {
-          navbar.classList.add("scrolled");
-        } else {
-          navbar.classList.remove("scrolled");
+        // Scroll behavior
+        window.addEventListener("scroll", () => {
+          navbar.classList.toggle("scrolled", window.scrollY > 50);
+          backToTop.style.display = window.scrollY > 300 ? "block" : "none";
+        });
+
+        if (hamburger && navRight) {
+          hamburger.addEventListener("click", (e) => {
+            e.stopPropagation();
+            navRight.classList.toggle("active");
+          });
+
+          document.addEventListener("click", (e) => {
+            if (!navRight.contains(e.target) && !hamburger.contains(e.target)) {
+              navRight.classList.remove("active");
+            }
+          });
         }
 
-        // Show/hide back to top button
-        if (window.scrollY > 300) {
-          backToTop.style.display = "block";
-        } else {
-          backToTop.style.display = "none";
-        }
-      });
-
-      // Toggle mobile nav menu
-      hamburger.addEventListener("click", () => {
-        navRight.classList.toggle("active");
-      });
-      document.addEventListener("click", function (event) {
-        const isClickInsideMenu = navRight.contains(event.target);
-        const isClickOnHamburger = hamburger.contains(event.target);
-
-        if (!isClickInsideMenu && !isClickOnHamburger) {
-          navRight.classList.remove("active");
-        }
-      });
-
-      //Show/Hide dropdown
-      document.addEventListener("DOMContentLoaded", function () {
+        // Dropdown behavior
         const dropdownWrappers = document.querySelectorAll(".dropdown-wrapper");
-
         dropdownWrappers.forEach((wrapper) => {
           const dropdown = wrapper.querySelector(".dropdown");
 
-          // Toggle dropdown on click
           wrapper.addEventListener("click", (e) => {
             e.stopPropagation();
-
-            // Close all other dropdowns
             document.querySelectorAll(".dropdown").forEach((d) => {
               if (d !== dropdown) d.style.display = "none";
             });
-
-            // Toggle current dropdown
             dropdown.style.display =
               dropdown.style.display === "block" ? "none" : "block";
           });
         });
 
-        // Close all dropdowns when clicking outside
         document.addEventListener("click", () => {
           document.querySelectorAll(".dropdown").forEach((dropdown) => {
             dropdown.style.display = "none";
           });
         });
 
-        // Carousel script
+        // ===========================
+        // TEAM DATA FUNCTION
+        // ===========================
+        const teamData = {
+          sison: {
+            title: "MAINTENANCE DEPARTMENT",
+            members: [
+              {
+                id: "borlagdatan",
+                name: "ARVIN A. BORLAGDATAN",
+                role: "Mechanical Maintenance Supervisor, ABPP",
+                img: "png/BORLAGDATAN.png",
+              },
+              {
+                id: "bandiola",
+                name: "RAYMARK P. BANDIOLA",
+                role: "Mechanical Maintenance Supervisor, DPTPP",
+                img: "png/BANDIOLA.png",
+              },
+              {
+                id: "palay",
+                name: "KEVIN JEZER R. PALAY",
+                role: "Electrical Maintenance Supervisor, DPTPP",
+                img: "png/PALAY.png",
+              },
+              {
+                id: "catbagan",
+                name: "ERNESTO L. CATBAGAN",
+                role: "Electrical Maintenance Supervisor, ABPP",
+                img: "png/CATBAGAN.png",
+              },
+              {
+                id: "biona",
+                name: "JOHN MARK L. BIONA",
+                role: "I&C Maintenance Supervisor",
+                img: "png/BIONA.png",
+              },
+              {
+                id: "salazar",
+                name: "ELLAZAR P. SALAZAR",
+                role: "Maintenance Planning Supervisor",
+                img: "png/SALAZAR.png",
+              },
+              {
+                name: "EDGARDO A. ALFECHE",
+                role: "Maintenance Consultant",
+                img: "png/ALFECHE.png",
+              },
+            ],
+          },
+
+          salazar: {
+            title: "MAINTENANCE PLANNING, DPTPP",
+            members: [
+              {
+                name: "JOHNAS JAY G. AGRAVANTE",
+                role: "Mechanical Planning Engineer",
+                img: "png/AGRAVANTE.png",
+              },
+              {
+                name: "ELIEZER R. RODRIGUEZ",
+                role: "Electrical Planning Engineer",
+                img: "png/RODRIGUEZ.png",
+              },
+              {
+                name: "JEFFREY M. JUANERIO",
+                role: "I&C Planning Engineer",
+                img: "png/JUANERIO.png",
+              },
+              {
+                name: "PAUL JAMES G. ZABALA",
+                role: "Planning Assistant",
+                img: "png/ZABALA.png",
+              },
+            ],
+          },
+
+          salazar2: {
+            title: "MAINTENANCE PLANNING, ABPP",
+            members: [
+              {
+                name: "REY ADRIAN S CONSTANTINO",
+                role: "Mechanical Planning Engineer",
+                img: "png/CONSTANTINO.png",
+              },
+              {
+                name: "KAYE ANDREA S. NOBLEZA",
+                role: "Electrical Planning Engineer",
+                img: "png/NOBLEZA.png",
+              },
+              {
+                name: "GERALD L. TAGARO",
+                role: "Electrical Planning Engineer (Reliever)",
+                img: "png/JUANERIO.png",
+              },
+            ],
+          },
+
+          bandiola: {
+            title: "MECHANICAL MAINTENANCE, DPTPP",
+            members: [
+              {
+                name: "RONALD I. PARCON",
+                role: "Plant Mechanic",
+                img: "png/PARCON.png",
+              },
+              {
+                name: "FROILAN F. ESMENDA",
+                role: "Plant Mechanic",
+                img: "png/ESMENDA.png",
+              },
+              {
+                name: "RUDOLFO L. SALOMON",
+                role: "Plant Mechanic",
+                img: "png/SALOMON.png",
+              },
+              {
+                name: "MANDY Y. MANZANO",
+                role: "Plant Mechanic",
+                img: "png/MANZANO.png",
+              },
+              {
+                name: "JOHN GERALD L. TORREGOZA",
+                role: "Plant Mechanic",
+                img: "png/TORREGOZA.png",
+              },
+              {
+                name: "RAYMOND B. BOTAVARA",
+                role: "Mechanical Maintenance Technician (Light and Heavy Equipment)",
+                img: "png/BOTAVARA.png",
+              },
+            ],
+          },
+
+          bandiola2: {
+            title: "MECHANICAL MAINTENANCE, DPTPP",
+            members: [
+              {
+                name: "CONFESOR S. ILAGAN JR.",
+                role: "Mechanical Maintenance Technician (Light and Heavy Equipment)",
+                img: "png/ILAGAN.png",
+              },
+              {
+                name: "REY C. SOTITO",
+                role: "Welder/Pipefitter",
+                img: "png/SOTITO.png",
+              },
+              {
+                name: "REYNAN U. BALDIVINO",
+                role: "Welder/Pipefitter",
+                img: "png/BALDIVINO.png",
+              },
+              {
+                name: "SONNY C. BUNDAC",
+                role: "Plant Maintenance Assitant",
+                img: "png/BUNDAC.png",
+              },
+              {
+                name: "NEIL COLEEN G. ROMERO",
+                role: "Plant Maintenance Assitant",
+                img: "png/ROMERO.png",
+              },
+            ],
+          },
+
+          borlagdatan: {
+            title: "MECHANICAL MAINTENANCE, ABPP",
+            members: [
+              {
+                name: "JASON G. MUMAR",
+                role: "Plant Mechanic",
+                img: "png/MUMAR.png",
+              },
+              {
+                name: "ALLAN B. PERALTA",
+                role: "Plant Mechanic",
+                img: "png/PERALTA.png",
+              },
+              {
+                name: "JACOB E. ZONIO",
+                role: "Welder/Pipefitter",
+                img: "png/ZONIO.png",
+              },
+              {
+                name: "MARCELO U. OAMAN",
+                role: "Plant Maintenance Assistant",
+                img: "png/OAMAN.png",
+              },
+              {
+                name: "ANTONIO L. DENOSTA",
+                role: "Plant Maintenance Assitant",
+                img: "png/DENOSTA.png",
+              },
+            ],
+          },
+
+          palay: {
+            title: "ELECTRICAL MAINTENANCE, DPTPP",
+            members: [
+              {
+                name: "ARNEL M. FABRIGAS",
+                role: "Plant Electrician",
+                img: "png/FABRIGAS.png",
+              },
+              {
+                name: "JEFFREY B. BAGNATE",
+                role: "Plant Electrician",
+                img: "png/BAGNATE.png",
+              },
+              {
+                name: "MARK JASON M. CAABAY",
+                role: "Plant Electrician",
+                img: "png/CAABAY.png",
+              },
+              {
+                name: "JEFFRIL P. SUMAURIO",
+                role: "Plant Electrician",
+                img: "png/SUMAURIO.png",
+              },
+              {
+                name: "JOHN YVIS L. SANTOS",
+                role: "Plant Electrician",
+                img: "png/SANTOS.png",
+              },
+              {
+                name: "VICTOR JOSEPH S. VILLATURA",
+                role: "Plant Electrician",
+                img: "png/VILLATURA.png",
+              },
+            ],
+          },
+
+          catbagan: {
+            title: "ELECTRICAL MAINTENANCE, ABPP",
+            members: [
+              {
+                name: "ROGER C. CELINO",
+                role: "Plant Electrician",
+                img: "png/CELINO.png",
+              },
+              {
+                name: "DEXTER OLIVER B. AISO",
+                role: "Plant Electrician",
+                img: "png/AISO.png",
+              },
+            ],
+          },
+
+          biona: {
+            title: "I&C MAINTENANCE, DPTPP",
+            members: [
+              {
+                name: "RONALD JOSEPH H. CAPUNO",
+                role: "I&C Maintenance Engineer",
+                img: "png/CAPUNO.png",
+              },
+              {
+                name: "ARIEL Q. SILANG",
+                role: "I&C Technician",
+                img: "png/SILANG.png",
+              },
+              {
+                name: "EMMAN A. CUALING",
+                role: "I&C Technician",
+                img: "png/CUALING.png",
+              },
+              {
+                name: "GIRAN F. LAUREANO",
+                role: "I&C Technician",
+                img: "png/LAUREANO.png",
+              },
+              {
+                name: "CZAR WENDELL G. SALCEDO",
+                role: "I&C Technician",
+                img: "png/SALCEDO.png",
+              },
+              {
+                name: "KIEMVERT T. GATTOC",
+                role: "I&C Technician",
+                img: "png/GATTOC.png",
+              },
+            ],
+          },
+
+          biona2: {
+            title: "I&C MAINTENANCE, ABPP",
+            members: [
+              {
+                name: "ROMEL V. BACAY",
+                role: "I&C Maintenance Engineer",
+                img: "png/BACAY.png",
+              },
+              {
+                name: "CHRISTIAN JULIUS C. PAMITTAN",
+                role: "I&C Technician",
+                img: "png/PAMITTAN.png",
+              },
+            ],
+          },
+          // Repeat same format for other supervisors...
+        };
+
+        // ===========================
+        // CAROUSEL FUNCTIONALITY
+        // ===========================
+        // ========== CAROUSEL SETUP ==========
         let currentIndex = 0;
         const items = document.querySelectorAll(".carousel-item");
+
+        function showTeam(personId) {
+          const teamTitle = document.getElementById("teamTitle");
+          const teamGrid = document.getElementById("teamGrid");
+
+          const person = teamData[personId];
+          if (!person || !person.members) {
+            teamTitle.textContent = "No team members listed.";
+            teamGrid.innerHTML = "";
+            return;
+          }
+
+          // Set title
+          teamTitle.textContent = person.title;
+
+          // Set team members
+          teamGrid.innerHTML = person.members
+            .map(
+              (m) => `
+            <div class="team-card" data-id="${
+              m.id || personId
+            }" onclick="handleTeamCardClick(this)">
+              <img src="${m.img}" alt="${m.name}" />
+              <div class="team-info">
+                <strong>${m.name}</strong><br/>
+                <span>${m.role}</span>
+              </div>
+            </div>
+          `
+            )
+            .join("");
+        }
 
         function showSlide(index) {
           items.forEach((item, i) => {
             item.classList.toggle("active", i === index);
           });
+
+          const activeItem = items[index];
+          const personId = activeItem.dataset.id;
+          if (personId) showTeam(personId);
         }
 
-        function prevSlide() {
+        window.prevSlide = () => {
           currentIndex = (currentIndex - 1 + items.length) % items.length;
           showSlide(currentIndex);
-        }
+        };
 
-        function nextSlide() {
+        window.nextSlide = () => {
           currentIndex = (currentIndex + 1) % items.length;
           showSlide(currentIndex);
-        }
+        };
 
-        // Optional: Auto-slide every 5 seconds
-        // setInterval(nextSlide, 5000);
+        window.handleCarouselClick = (item) => {
+          const personId = item.dataset.id;
+          if (!personId) return;
+
+          const index = [...items].findIndex(
+            (el) => el.dataset.id === personId
+          );
+          if (index !== -1) {
+            currentIndex = index;
+            showSlide(currentIndex);
+          }
+        };
+
+        window.handleTeamCardClick = (card) => {
+          const id = card.dataset.id;
+          if (!id) return;
+
+          const index = [...items].findIndex((el) => el.dataset.id === id);
+          if (index !== -1) {
+            currentIndex = index;
+            showSlide(currentIndex);
+          }
+        };
+
+        showSlide(currentIndex);
       });
     </script>
   </body>
