@@ -2,7 +2,7 @@
   position: relative;
   text-align: center;
   padding: 40px 20px;
-  background-color: #1a1a1a;
+  background-color: #5d5d5d;
   color: white;
   overflow: hidden;
 }
@@ -128,8 +128,8 @@
   grid-template-columns: repeat(7, 1fr); /* Four columns */
   width: 100%;
   max-width: 1200px; /* Limit overall width */
-  margin: 0 auto; /* Center the whole block */
-  padding: 20px 0;
+  margin: auto; /* Center the whole block */
+  padding: 10px 0;
 }
 
 .team-card {
@@ -161,7 +161,7 @@
 
 .team-info {
   margin-top: 1px;
-  font-size: 0.8rem;
+  font-size: 1rem;
 }
 
 #teamTitle {
