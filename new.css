@@ -1,0 +1,155 @@
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: #f4f6f9;
+  margin: 0;
+  padding: 20px;
+}
+.dashboard-container {
+  max-width: 960px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.summary-cards {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  flex: 1 1 30%;
+  text-align: center;
+}
+.card h2 {
+  margin: 0;
+  font-size: 26px;
+}
+.card p {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: #555;
+}
+.chart-container {
+  background: white;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  overflow: auto;
+}
+.chart-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#barChart {
+  height: 300px;
+}
+.equipment-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+.equipment-table th,
+.equipment-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+.equipment-table th {
+  background-color: #f9fafc;
+}
+
+.equipment-table-wrapper {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #454545;
+}
+
+.problem-table thead th {
+  position: sticky;
+  top: 0;
+  background: #000000;
+  z-index: 1;
+  color: white;
+  padding: 10px;
+}
+
+.problem-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  table-layout: auto;
+}
+
+.problem-table thead th {
+  position: sticky;
+  top: 0;
+  background: #000;
+  color: white;
+  padding: 10px;
+  text-align: left;
+  z-index: 1;
+}
+
+/* Add spacing between columns */
+.problem-table th,
+.problem-table td {
+  padding: 8px 12px;
+  white-space: normal;
+  vertical-align: top;
+}
+
+.problem-table tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.problem-table tbody tr:nth-child(even) {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Optional: clickable links in blue rows */
+.problem-table tbody tr:nth-child(even) a {
+  color: #bde0ff;
+  text-decoration: none;
+}
+
+.problem-table td:nth-child(5),
+.problem-table td:nth-child(6),
+.problem-table td:nth-child(10) {
+  max-width: 150px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.problem-table td:first-child,
+.problem-table th:first-child {
+  white-space: nowrap; /* Keep date on one line */
+  width: 120px; /* Set fixed width for date column */
+  text-align: left; /* Optional: align left for better readability */
+}
+
+/* Make table wrapper fill screen height and allow scroll */
+.equipment-scroll-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 400px); /* Adjust based on other content height */
+}
+
+.table-wrapper {
+  max-height: 60vh; /* or adjust as needed */
+  overflow-y: auto;
+  border-radius: 6px;
+}

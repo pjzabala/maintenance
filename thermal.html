@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Narra Thermal Dashboard</title>
+    <link rel="stylesheet" href="new.css" />
+    <script
+      type="text/javascript"
+      src="https://www.gstatic.com/charts/loader.js"
+    ></script>
+    <style></style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Summary Cards -->
+      <div class="summary-cards">
+        <div class="card" style="border-top: 4px solid #28a745">
+          <h2 id="opCount">0</h2>
+          <p>Operational</p>
+        </div>
+        <div class="card" style="border-top: 4px solid #ffc107">
+          <h2 id="susCount">0</h2>
+          <p>Sustainable</p>
+        </div>
+        <div class="card" style="border-top: 4px solid #dc3545">
+          <h2 id="brkCount">0</h2>
+          <p>Breakdown</p>
+        </div>
+      </div>
+
+      <!-- Doughnut Chart -->
+      <div class="chart-container">
+        <div id="statusChart" style="height: 280px"></div>
+      </div>
+
+      <!-- Problem Bar Graph per System -->
+      <div class="chart-container">
+        <div class="chart-nav">
+          <button onclick="prevSystem()">❮</button>
+          <h3 id="systemTitle">Combustion System</h3>
+          <button onclick="nextSystem()">❯</button>
+        </div>
+        <div id="barChart"></div>
+      </div>
+
+      <!-- Equipment Table -->
+      <div class="chart-container">
+        <h3>Equipment List</h3>
+        <div class="table-wrapper">
+          <table class="problem-table" id="equipmentTable">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Work Order Num</th>
+                <th>Equipment</th>
+                <th>Sub-Component</th>
+                <th>Brief Description</th>
+                <th>Detailed Description</th>
+                <th>Severity</th>
+                <th>Planning Remarks</th>
+                <th>WR Status</th>
+                <th>Pictures</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script type="text/javascript">
+    google.charts.load("current", { packages: ["corechart"] });
+    google.charts.setOnLoadCallback(drawFromSheet);
+
+    let groupedProblems = {};
+    let systems = [];
+    let currentSystemIndex = 0;
+
+    function drawFromSheet() {
+      const query = new google.visualization.Query(
+        "https://docs.google.com/spreadsheets/d/1px0fxxtRmS9-otYRjlgUF2eBUvqbKBE3Y1HDPn6v200/gviz/tq?sheet=Work%20Order%20Request"
+      );
+      query.send(function (response) {
+        if (response.isError()) {
+          console.error(
+            "Error loading data:",
+            response.getMessage(),
+            response.getDetailedMessage()
+          );
+          return;
+        }
+        handleData(response);
+      });
+    }
+
+    function handleData(response) {
+      const data = response.getDataTable();
+      let op = 0,
+        sus = 0,
+        brk = 0;
+      const statusCol = data.getColumnIndex("Current Status");
+      const detailCol = data.getColumnIndex("Detailed Description");
+      const systemCol = data.getColumnIndex("System");
+
+      // 📌 Columns for Equipment Table
+      const colIndexes = {
+        timestamp: data.getColumnIndex("Timestamp"),
+        woNum: data.getColumnIndex("Work Order Num"),
+        equipment: data.getColumnIndex("Equipment"),
+        subComponent: data.getColumnIndex("Sub-Component"),
+        briefDesc: data.getColumnIndex("Brief Description of Problem or Work"),
+        detailedDesc: data.getColumnIndex("Detailed Description"),
+        severity: data.getColumnIndex("Severity"),
+        planningRemarks: data.getColumnIndex("*Planning Remarks"),
+        wrStatus: data.getColumnIndex("WR Status"),
+        picture: data.getColumnIndex("Pictures"),
+      };
+
+      groupedProblems = {};
+
+      for (let i = 0; i < data.getNumberOfRows(); i++) {
+        const status = data.getValue(i, statusCol);
+        const detail = (data.getValue(i, detailCol) || "").toLowerCase();
+        const system = data.getValue(i, systemCol) || "Uncategorized";
+
+        if (status === 0) op++;
+        else if (status === 1) sus++;
+        else if (status === 2) brk++;
+
+        if (!groupedProblems[system]) groupedProblems[system] = {};
+
+        if (
+          detail.includes("no reading") ||
+          detail.includes("no signal") ||
+          detail.includes("no input")
+        ) {
+          let type = "No Reading";
+          groupedProblems[system][type] =
+            (groupedProblems[system][type] || 0) + 1;
+        } else if (
+          detail.includes("unusual sound") ||
+          detail.includes("abnormal noise") ||
+          detail.includes("strange sound")
+        ) {
+          let type = "Unusual Sound";
+          groupedProblems[system][type] =
+            (groupedProblems[system][type] || 0) + 1;
+        } else if (detail.includes("leak")) {
+          let type = "Other Leak";
+          if (detail.includes("water")) type = "Water Leak";
+          else if (detail.includes("oil")) type = "Oil Leak";
+          else if (detail.includes("air")) type = "Air Leak";
+          else if (detail.includes("ash")) type = "Ash Leak";
+          else if (detail.includes("steam")) type = "Steam Leak";
+          else if (detail.includes("dust")) type = "Coal Dust Leak";
+          else if (detail.includes("sea")) type = "Sea Water Leak";
+          else if (detail.includes("lime")) type = "Limestone Leak";
+
+          groupedProblems[system][type] =
+            (groupedProblems[system][type] || 0) + 1;
+        }
+      }
+
+      systems = Object.keys(groupedProblems);
+      currentSystemIndex = 0;
+
+      document.getElementById("opCount").textContent = op;
+      document.getElementById("susCount").textContent = sus;
+      document.getElementById("brkCount").textContent = brk;
+
+      drawStatusChart(op, sus, brk);
+      drawBarChart(systems[currentSystemIndex]);
+      drawEquipmentTable(data, colIndexes);
+    }
+
+    function formatDate(value) {
+      if (!value) return "";
+      const date = new Date(value);
+      if (isNaN(date)) return value;
+
+      const options = { year: "numeric", month: "long", day: "numeric" };
+      return date.toLocaleDateString("en-US", options);
+    }
+
+    function drawStatusChart(op, sus, brk) {
+      const chartData = google.visualization.arrayToDataTable([
+        ["Status", "Count"],
+        ["Operational", op],
+        ["Sustainable", sus],
+        ["Breakdown", brk],
+      ]);
+      const options = {
+        pieHole: 0.4,
+        colors: ["#28a745", "#ffc107", "#dc3545"],
+        legend: { position: "bottom" },
+      };
+      const chart = new google.visualization.PieChart(
+        document.getElementById("statusChart")
+      );
+      chart.draw(chartData, options);
+    }
+
+    function drawBarChart(system) {
+      document.getElementById("systemTitle").textContent = system;
+      const problems = groupedProblems[system];
+      const rows = Object.entries(problems).map(([type, count]) => [
+        type,
+        count,
+      ]);
+
+      const chartData = google.visualization.arrayToDataTable([
+        ["Problem Type", "Count"],
+        ...rows,
+      ]);
+
+      const options = {
+        legend: { position: "none" },
+        colors: ["#007bff"],
+        hAxis: { title: "Problem Type" },
+        vAxis: {
+          title: "Count",
+          format: "0", // <- Ensures integers only
+          gridlines: { count: -1 }, // <- Automatically adjusts steps
+        },
+      };
+
+      const chart = new google.visualization.ColumnChart(
+        document.getElementById("barChart")
+      );
+      chart.draw(chartData, options);
+    }
+
+    function nextSystem() {
+      if (systems.length === 0) return;
+      currentSystemIndex = (currentSystemIndex + 1) % systems.length;
+      drawBarChart(systems[currentSystemIndex]);
+    }
+
+    function prevSystem() {
+      if (systems.length === 0) return;
+      currentSystemIndex =
+        (currentSystemIndex - 1 + systems.length) % systems.length;
+      drawBarChart(systems[currentSystemIndex]);
+    }
+
+    // ✅ Equipment Table Rendering
+    function drawEquipmentTable(data, colIndexes) {
+      const tbody = document.querySelector("#equipmentTable tbody");
+      tbody.innerHTML = "";
+
+      // Extract rows and sort by date
+      const rows = [];
+      for (let i = 0; i < data.getNumberOfRows(); i++) {
+        const timestamp = data.getValue(i, colIndexes.timestamp);
+        rows.push({ index: i, timestamp });
+      }
+
+      rows.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // newest first
+
+      for (const row of rows) {
+        const i = row.index;
+        const tr = `
+      <tr>
+        <td>${formatDate(data.getValue(i, colIndexes.timestamp))}</td>
+        <td>${data.getValue(i, colIndexes.woNum) || ""}</td>
+        <td>${data.getValue(i, colIndexes.equipment) || ""}</td>
+        <td>${data.getValue(i, colIndexes.subComponent) || ""}</td>
+        <td>${data.getValue(i, colIndexes.briefDesc) || ""}</td>
+        <td>${data.getValue(i, colIndexes.detailedDesc) || ""}</td>
+        <td>${data.getValue(i, colIndexes.severity) || ""}</td>
+        <td>${data.getValue(i, colIndexes.planningRemarks) || ""}</td>
+        <td>${data.getValue(i, colIndexes.wrStatus) || ""}</td>
+        <td>${data.getValue(i, colIndexes.picture) || ""}</td>
+      </tr>
+    `;
+        tbody.innerHTML += tr;
+      }
+    }
+  </script>
+</html>

@@ -38,7 +38,7 @@
           <div class="nav-item"><a href="#" class="nav-item">Home</a></div>
 
           <div class="nav-item dropdown-wrapper">
-            <a class="nav-item" href="#">NARRA THERMAL 1 ▼</a>
+            <a class="nav-item" href="/">NARRA THERMAL 1 ▼</a>
             <div class="dropdown">
               <p>
                 <a class="nav-item" href="equipment-status.html"
@@ -166,7 +166,7 @@
               <img src="png/BANDIOLA.png" alt="Raymark Bandiola" />
               <p>
                 <strong>RAYMARK P. BANDIOLA</strong><br />
-                <small>Mechanical Maintenance Supervisor</small>
+                <small>Mechanical Maintenance Supervisor, DPTPP</small>
               </p>
             </div>
 
@@ -178,7 +178,7 @@
               <img src="png/BANDIOLA.png" alt="Raymark Bandiola" />
               <p>
                 <strong>RAYMARK P. BANDIOLA</strong><br />
-                <small>Mechanical Maintenance Supervisor</small>
+                <small>Mechanical Maintenance Supervisor, DPTPP</small>
               </p>
             </div>
 
@@ -190,7 +190,7 @@
               <img src="png/BORLAGDATAN.png" alt="Arvin Borlagdatan" />
               <p>
                 <strong>ARVIN A. BORLAGDATAN</strong><br />
-                <small>Maintenance Supervisor, ABPP</small>
+                <small>Mechanical Maintenance Supervisor, ABPP</small>
               </p>
             </div>
 
@@ -202,7 +202,7 @@
               <img src="png/PALAY.png" alt="Kevin Palay" />
               <p>
                 <strong>Kevin Jezer R. Palay</strong><br />
-                <small>Maintenance Supervisor, DPTPP</small>
+                <small>Electrical Maintenance Supervisor, DPTPP</small>
               </p>
             </div>
 
@@ -214,7 +214,7 @@
               <img src="png/CATBAGAN.png" alt="Ernesto Catbagan" />
               <p>
                 <strong>ERNESTO L. CATBAGAN</strong><br />
-                <small>Maintenance Supervisor, ABPP</small>
+                <small>Electrical Maintenance Supervisor, ABPP</small>
               </p>
             </div>
 
@@ -299,6 +299,14 @@
         const hamburger = document.getElementById("hamburger");
         const navRight = document.querySelector(".nav-right");
         const teamDisplay = document.getElementById("teamDisplay");
+
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "ArrowLeft") {
+            prevSlide();
+          } else if (e.key === "ArrowRight") {
+            nextSlide();
+          }
+        });
 
         // Scroll behavior
         window.addEventListener("scroll", () => {
