@@ -1,0 +1,93 @@
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100vw; /* full viewport width */
+  box-sizing: border-box;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.2); /* Transparent initial */
+  padding: 10px 15px;
+  color: white;
+  backdrop-filter: blur(10px);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  height: 70px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.navbar.scrolled {
+  background-color: rgba(0, 0, 0, 0.9); /* Dark when scrolled */
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.nav-left img {
+  width: 150px;
+  object-fit: contain;
+}
+
+.nav-left span {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.nav-right {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  padding-right: 50px;
+}
+
+.nav-item {
+  position: relative;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.nav-item:hover {
+  color: #00bcd4;
+}
+
+.dropdown-wrapper {
+  position: relative;
+  display: inline-block; /* Ensures dropdown is based on text width */
+}
+
+.dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%; /* Move the dropdown horizontally */
+  transform: translateX(-50%); /* Center it under the trigger */
+  background-color: #2a2a2a;
+  border-radius: 4px;
+  padding: 10px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  min-width: 200px;
+  z-index: 1000;
+  text-align: center;
+}
+
+.dropdown p {
+  margin: 0;
+  padding: 10px 20px;
+  color: white;
+  white-space: nowrap;
+  background-color: transparent;
+  transition: color 0.2s ease;
+}
+
+.dropdown p:hover {
+  color: #00bcd4;
+}
+
+/*.dropdown-wrapper:hover .dropdown {
+  display: block;
+} */

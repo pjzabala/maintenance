@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maintenance Dashboard</title>
+    <link rel="stylesheet" href="history.css" />
+    <link rel="stylesheet" href="header.css" />
+    <link rel="stylesheet" href="mobile.css" />
+    <!-- PapaParse for CSV -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+
+    <!-- Chart.js for the bar chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <header>
+      <div class="navbar" id="navbar">
+        <div class="nav-left">
+          <!-- Hamburger Menu Icon -->
+          <div class="hamburger" id="hamburger">
+            &#9776;
+            <!-- Unicode hamburger icon -->
+          </div>
+          <a href="index.html">
+            <img
+              src="https://www.dmciholdings.com/storage/app/media/2023/Investment/New/fdmci-powertransparentnew0331.png"
+              alt="logo"
+            />
+          </a>
+          <span>PALAWAN MAINTENANCE</span>
+        </div>
+
+        <!-- Navbar Items -->
+        <div class="nav-right">
+          <div class="nav-item">
+            <a href="index.html" class="nav-item">Home</a>
+          </div>
+
+          <div class="nav-item dropdown-wrapper">
+            <a class="nav-item" href="#">NARRA THERMAL 1 ▼</a>
+            <div class="dropdown">
+              <p>
+                <a class="nav-item" href="equipment-status.html"
+                  >Equipment Status</a
+                >
+              </p>
+              <p><a class="nav-item" href="#=">Maintenance Schedule</a></p>
+              <p><a class="nav-item" href="history.html">History Records</a></p>
+              <p><a class="nav-item" href="#">Technical Info</a></p>
+              <p><a class="nav-item" href="#">DPTPP PMS 2025</a></p>
+            </div>
+          </div>
+
+          <div class="nav-item">
+            <a class="nav-item" href="aborlan-bunker1.html">ABORLAN BUNKER 1</a>
+          </div>
+          <div class="nav-item">
+            <a class="nav-item" href="hs-diesel.html">HS DIESEL PP</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="dashboard-container">
+      <h1>DPTPP Maintenance History Records</h1>
+
+      <!-- Filters -->
+      <div id="filters" class="filters-container">
+        <label>
+          System:
+          <select id="filter-system">
+            <option value="">All</option>
+          </select>
+        </label>
+        <label>
+          Equipment:
+          <select id="filter-equipment">
+            <option value="">All</option>
+          </select>
+        </label>
+        <label>
+          Type of Maintenance:
+          <select id="filter-maintenance">
+            <option value="">All</option>
+          </select>
+        </label>
+        <label>
+          Type of Problem/Activity:
+          <select id="filter-problem">
+            <option value="">All</option>
+          </select>
+        </label>
+        <label>
+          From:
+          <input type="date" id="filter-date-start" />
+        </label>
+        <label>
+          To:
+          <input type="date" id="filter-date-end" />
+        </label>
+        <div class="filter-button-wrapper">
+          <button id="clear-filters">Clear Filters</button>
+        </div>
+      </div>
+
+      <!-- Bar Chart -->
+      <div class="chart-container">
+        <h3>History Records</h3>
+        <canvas id="maintenanceChart"></canvas>
+      </div>
+
+      <!-- Yearly Trend Chart -->
+      <div class="yearly-trend-container">
+        <h3>Yearly Trend</h3>
+        <canvas id="yearlyTrendChart"></canvas>
+      </div>
+    </div>
+    <!-- Scripts -->
+    <script>
+      // Dropdown behavior
+      const dropdownWrappers = document.querySelectorAll(".dropdown-wrapper");
+      dropdownWrappers.forEach((wrapper) => {
+        const dropdown = wrapper.querySelector(".dropdown");
+
+        wrapper.addEventListener("click", (e) => {
+          e.stopPropagation();
+          document.querySelectorAll(".dropdown").forEach((d) => {
+            if (d !== dropdown) d.style.display = "none";
+          });
+          dropdown.style.display =
+            dropdown.style.display === "block" ? "none" : "block";
+        });
+      });
+
+      document.addEventListener("click", () => {
+        document.querySelectorAll(".dropdown").forEach((dropdown) => {
+          dropdown.style.display = "none";
+        });
+      });
+
+      const sheetCSVUrl =
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vQgNxvVvt9GcXHOU0YWx46Lo7GTowD7d7jNbOvU9h17UEWryQbQYEYWR6WpDdJFoW2b5wSS19ZFiXHg/pub?gid=1441715283&single=true&output=csv";
+
+      let originalData = [];
+      let currentChart = null;
+
+      async function loadCSVData() {
+        const response = await fetch(sheetCSVUrl);
+        const csvText = await response.text();
+        const parsed = Papa.parse(csvText, {
+          header: true,
+          skipEmptyLines: true,
+        });
+        return parsed.data;
+      }
+
+      function groupBySystemAndMaintenance(data) {
+        const result = {};
+        data.forEach((entry) => {
+          const system = entry["SYSTEM"] || "SYSTEM";
+          const type = (entry["TYPE OF MAINTENANCE"] || "").toLowerCase();
+
+          if (!result[system]) {
+            result[system] = {
+              Preventive: 0,
+              Corrective: 0,
+              Modification: 0,
+            };
+          }
+
+          if (type.includes("preventive")) result[system].Preventive++;
+          else if (type.includes("corrective")) result[system].Corrective++;
+          else if (type.includes("modification")) result[system].Modification++;
+        });
+
+        return result;
+      }
+
+      function renderGroupedChart(groupedData) {
+        const sortable = Object.entries(groupedData).map(([system, counts]) => {
+          const total =
+            counts.Preventive + counts.Corrective + counts.Modification;
+          return { system, ...counts, total };
+        });
+
+        sortable.sort((a, b) => b.total - a.total);
+
+        const systems = sortable.map((item) => item.system);
+        const preventiveData = sortable.map((item) => item.Preventive);
+        const correctiveData = sortable.map((item) => item.Corrective);
+        const modificationData = sortable.map((item) => item.Modification);
+
+        const ctx = document
+          .getElementById("maintenanceChart")
+          .getContext("2d");
+
+        if (currentChart) currentChart.destroy();
+
+        currentChart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: systems,
+            datasets: [
+              {
+                label: "Preventive",
+                data: preventiveData,
+                backgroundColor: "#4caf50",
+              },
+              {
+                label: "Corrective",
+                data: correctiveData,
+                backgroundColor: "#2196f3",
+              },
+              {
+                label: "Modification",
+                data: modificationData,
+                backgroundColor: "#ff9800",
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { position: "top" },
+              title: { display: true, text: "Maintenance Type" },
+            },
+            scales: {
+              y: { beginAtZero: true, ticks: { stepSize: 1 } },
+            },
+          },
+        });
+      }
+
+      function groupByYearAndMaintenance(data) {
+        const result = {
+          2024: { Preventive: 0, Corrective: 0, Modification: 0 },
+          2025: { Preventive: 0, Corrective: 0, Modification: 0 },
+        };
+
+        data.forEach((entry) => {
+          const dateStr = entry["DATE FINISHED"];
+          const type = (entry["TYPE OF MAINTENANCE"] || "").toLowerCase();
+          const year = new Date(dateStr).getFullYear();
+
+          if (year === 2024 || year === 2025) {
+            if (type.includes("preventive")) result[year].Preventive++;
+            else if (type.includes("corrective")) result[year].Corrective++;
+            else if (type.includes("modification")) result[year].Modification++;
+          }
+        });
+
+        return result;
+      }
+
+      function renderYearlyTrendChart(data) {
+        const yearlyCounts = groupByYearAndMaintenance(data);
+
+        const years = ["2024", "2025"];
+        const preventive = years.map((y) => yearlyCounts[y].Preventive);
+        const corrective = years.map((y) => yearlyCounts[y].Corrective);
+        const modification = years.map((y) => yearlyCounts[y].Modification);
+
+        const ctx = document
+          .getElementById("yearlyTrendChart")
+          .getContext("2d");
+
+        new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: years,
+            datasets: [
+              {
+                label: "Preventive",
+                data: preventive,
+                backgroundColor: "#4caf50",
+              },
+              {
+                label: "Corrective",
+                data: corrective,
+                backgroundColor: "#2196f3",
+              },
+              {
+                label: "Modification",
+                data: modification,
+                backgroundColor: "#ff9800",
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { position: "top" },
+              title: {
+                display: true,
+                text: "Maintenance Type",
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: { stepSize: 1 },
+              },
+            },
+          },
+        });
+      }
+
+      function populateFilters(data) {
+        const systems = new Set();
+        const equipments = new Set();
+        const maintenances = new Set();
+        const problems = new Set();
+
+        data.forEach((row) => {
+          if (row["SYSTEM"]) systems.add(row["SYSTEM"]);
+          if (row["EQUIPMENT ID NO."]) equipments.add(row["EQUIPMENT ID NO."]);
+          if (row["TYPE OF MAINTENANCE"])
+            maintenances.add(row["TYPE OF MAINTENANCE"]);
+          if (row["TYPE OF PROBLEM/ACTIVITY"])
+            problems.add(row["TYPE OF PROBLEM/ACTIVITY"]);
+        });
+
+        fillSelect("filter-system", Array.from(systems));
+        fillSelect("filter-equipment", Array.from(equipments));
+        fillSelect("filter-maintenance", Array.from(maintenances));
+        fillSelect("filter-problem", Array.from(problems));
+      }
+
+      function fillSelect(id, values) {
+        const select = document.getElementById(id);
+        select.innerHTML = '<option value="">All</option>';
+        values.sort().forEach((value) => {
+          const option = document.createElement("option");
+          option.value = value;
+          option.textContent = value;
+          select.appendChild(option);
+        });
+      }
+
+      function applyFilters(data) {
+        const system = document.getElementById("filter-system").value;
+        const equipment = document.getElementById("filter-equipment").value;
+        const maintenance = document.getElementById("filter-maintenance").value;
+        const problem = document.getElementById("filter-problem").value;
+        const startDate = document.getElementById("filter-date-start").value;
+        const endDate = document.getElementById("filter-date-end").value;
+
+        return data.filter((row) => {
+          const matchSystem = !system || row["SYSTEM"] === system;
+          const matchEquipment =
+            !equipment || row["EQUIPMENT ID NO."] === equipment;
+          const matchMaintenance =
+            !maintenance || row["TYPE OF MAINTENANCE"] === maintenance;
+          const matchProblem =
+            !problem || row["TYPE OF PROBLEM/ACTIVITY"] === problem;
+
+          const rowDate = new Date(row["DATE FINISHED"]);
+          const matchStart = !startDate || rowDate >= new Date(startDate);
+          const matchEnd = !endDate || rowDate <= new Date(endDate);
+
+          return (
+            matchSystem &&
+            matchEquipment &&
+            matchMaintenance &&
+            matchProblem &&
+            matchStart &&
+            matchEnd
+          );
+        });
+      }
+
+      function updateChart() {
+        const filtered = applyFilters(originalData);
+        const grouped = groupBySystemAndMaintenance(filtered);
+        renderGroupedChart(grouped);
+        renderYearlyTrendChart(filtered);
+      }
+
+      function clearAllFilters() {
+        document.getElementById("filter-system").value = "";
+        document.getElementById("filter-equipment").value = "";
+        document.getElementById("filter-maintenance").value = "";
+        document.getElementById("filter-problem").value = "";
+        document.getElementById("filter-date-start").value = "";
+        document.getElementById("filter-date-end").value = "";
+        updateChart();
+      }
+
+      // Load and initialize
+      loadCSVData().then((data) => {
+        originalData = data;
+        populateFilters(data);
+        updateChart();
+
+        document
+          .getElementById("clear-filters")
+          .addEventListener("click", clearAllFilters);
+
+        [
+          "filter-system",
+          "filter-equipment",
+          "filter-maintenance",
+          "filter-problem",
+          "filter-date-start",
+          "filter-date-end",
+        ].forEach((id) =>
+          document.getElementById(id).addEventListener("change", updateChart)
+        );
+      });
+    </script>
+  </body>
+</html>

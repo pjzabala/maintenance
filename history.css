@@ -1,0 +1,131 @@
+html,
+body {
+  margin: 0;
+  background: #eee;
+  font-family: "Oswald", sans-serif;
+  overflow-x: hidden;
+  padding-top: 50px;
+}
+
+h1 {
+  margin-top: 20px;
+  font-size: 28px;
+  text-align: center;
+  color: #333;
+}
+
+#filters {
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+th,
+td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+th {
+  background-color: #f0f0f0;
+}
+
+canvas {
+  margin-top: 20px;
+}
+
+.filters-container {
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  max-width: 1100px;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: end;
+}
+
+.filters-container label,
+.filter-button-wrapper {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+.filters-container select,
+.filters-container input[type="date"],
+button#clear-filters {
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+button#clear-filters {
+  background: #2400d6;
+  color: #fff;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  height: 36px;
+}
+
+button#clear-filters:hover {
+  background-color: #088cff;
+}
+
+.chart-container {
+  background: #fff;
+  padding: 20px 30px;
+  margin: 20px auto;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 1100px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  height: calc(100vh - 50px); /* Subtract header/filter heights */
+  box-sizing: border-box;
+  text-align: center;
+  overflow-x: auto; /* allows horizontal scroll on small screens */
+}
+
+.chart-container h3 {
+  margin-top: 0;
+  font-size: 22px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+#maintenanceChart {
+  width: 100% !important;
+  max-height: 100%;
+}
+
+.yearly-trend-container {
+  background: #fff;
+  padding: 20px;
+  margin: 30px auto;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 1100px;
+  height: calc(100vh - 50px); /* Subtract header/filter heights */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.yearly-trend-container canvas {
+  flex-grow: 1;
+  max-height: 100%;
+}
