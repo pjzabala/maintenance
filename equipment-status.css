@@ -174,3 +174,9 @@ body.equipment-status-page .dropdown p:hover {
   height: 400px;
   margin: 0 auto;
 }
+.system-pie-chart {
+  width: 100%;
+  max-width: 800px;
+  height: 550px;
+  margin: 0 auto;
+}
