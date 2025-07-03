@@ -219,6 +219,7 @@
           counts.Sustainable;
         document.getElementById(`${systemId}-breakdown`).textContent =
           counts.Breakdown;
+        document.getElementById(`${systemId}-pie`).style.display = "block";
 
         const data = google.visualization.arrayToDataTable([
           ["Status", "Count"],
@@ -277,19 +278,6 @@
         navbar.classList.toggle("scrolled", window.scrollY > 50);
       });
 
-      function showTab(event, tabId) {
-        document
-          .querySelectorAll(".tab-content")
-          .forEach((div) => (div.style.display = "none"));
-        document
-          .querySelectorAll(".tab-button")
-          .forEach((btn) => btn.classList.remove("active"));
-        document.getElementById(tabId).style.display = "block";
-        event.target.classList.add("active");
-
-        renderStatusOverview(tabId);
-      }
-
       // Toggle mobile nav menu
       document.addEventListener("DOMContentLoaded", function () {
         const hamburger = document.getElementById("hamburger");
@@ -334,6 +322,10 @@
       document.addEventListener("DOMContentLoaded", function () {
         renderStatusOverview("equipments"); // First tab
       });
+
+      function renderStatusOverview(systemId) {
+        drawPieChart(systemId);
+      }
     </script>
     <!-- FOOTER -->
     <footer class="footer">
