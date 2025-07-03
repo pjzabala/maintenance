@@ -106,4 +106,70 @@ body.equipment-status-page .dropdown p:hover {
   max-width: 1200px;
   margin: auto;
   padding: 5px;
+  max-height: 1200px;
+}
+
+.chart-summary {
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.status-overview-container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding: 1.5rem 1rem;
+  border-top: 1px solid #ffffff;
+  background-color: #ffffff;
+  border-radius: 12px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+.chart-count-summary {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.chart-count-summary .card {
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 16px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.operational {
+  background-color: #e0f7e9;
+  color: #2e7d32;
+}
+
+.sustainable {
+  background-color: #fff9c4;
+  color: #f9a825;
+}
+
+.breakdown {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.pie-chart-wrapper {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 1rem; /* ✅ Prevents overlap with footer */
+}
+.pie-chart-div {
+  width: 100%;
+  height: 300px;
+  min-height: 300px;
 }

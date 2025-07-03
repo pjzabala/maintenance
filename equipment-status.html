@@ -14,6 +14,17 @@
       href="https://fonts.googleapis.com/css2?family=Oswald:wght@300&display=swap"
       rel="stylesheet"
     />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://www.gstatic.com/charts/loader.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://www.gstatic.com/charts/loader.js"
+    ></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body class="equipment-status-page">
     <!-- NAVBAR -->
@@ -67,13 +78,6 @@
     <main class="equipment-status-page">
       <!-- PAGE TITLE -->
       <div class="page-title">NARRA THERMAL 1 EQUIPMENT STATUS</div>
-
-      <!--  <iframe
-        id="myIframe"
-        src="thermal.html"
-        width="100%"
-        style="border: none"
-      ></iframe> -->
 
       <!-- TAB SELECTION -->
       <div class="tabs">
@@ -131,46 +135,141 @@
 
       for (const [id, path] of Object.entries(reports)) {
         document.write(`
-        <div class="tab-content" id="${id}" style="display: ${
+      <div class="tab-content" id="${id}" style="display: ${
           id === "equipments" ? "block" : "none"
-        }">
-          <iframe src="https://lookerstudio.google.com/embed/reporting/${path}?hl=en&locale=en_US"
-            width="100%" height="600" style="border:1px solid #ccc; border-radius:12px" allowfullscreen></iframe>
+        }; margin-bottom: 100px;">
+
+        <iframe
+          src="https://lookerstudio.google.com/embed/reporting/${path}?hl=en&locale=en_US"
+          width="100%"
+          height="1000"
+          style="border:1px solid #ccc; border-radius:12px"
+          allowfullscreen>
+        </iframe>
+
+        <!-- 🔽 STATUS OVERVIEW CONTAINER -->
+        <div class="status-overview-container">
+          <div class="chart-count-summary">
+            <div class="card operational">🟢 Operational: <span id="${id}-operational">0</span></div>
+            <div class="card sustainable">🟡 Sustainable: <span id="${id}-sustainable">0</span></div>
+            <div class="card breakdown">🔴 Breakdown: <span id="${id}-breakdown">0</span></div>
+          </div>
+          <div class="pie-chart-wrapper">
+            <div id="${id}-pie" class="pie-chart-div"></div>
+          </div>
         </div>
-      `);
+      </div>
+    `);
       }
     </script>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-      <div class="footer-content">
-        <div class="footer-left">
-          <h3>Palawan Maintenance</h3>
-          <p>Narra Thermal 1, Aborlan Bunker 1, HS Diesel PP</p>
-          <p>DMCI Power Corporation – Palawan Operations</p>
-        </div>
+    <script>
+      const csvUrl =
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vRI4YerzHu4mr6hT73gPjJDaWV1BNncnXPl8dzEyPl-R0TYaJc4NLI8a_36KgJ61N64dnYPJ3Auob3U/pub?gid=698619125&single=true&output=csv";
 
-        <div class="footer-center">
-          <p><strong>Email:</strong> maintenance@dmcipower.com</p>
-          <p><strong>Phone:</strong> +63 (48) 123-4567</p>
-          <p><strong>Office Hours:</strong> Mon–Fri, 8:00AM–5:00PM</p>
-        </div>
+      let parsedCSV = [];
 
-        <div class="footer-right">
-          <h4>Quick Links</h4>
-          <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="equipment-status.html">Equipment Status</a></li>
-            <li><a href="#">Maintenance Schedule</a></li>
-            <li><a href="#">History Records</a></li>
-          </ul>
-        </div>
-      </div>
+      // Load CSV once
+      function loadCSV() {
+        return fetch(csvUrl)
+          .then((res) => res.text())
+          .then((text) => {
+            parsedCSV = Papa.parse(text, {
+              header: true,
+              skipEmptyLines: true,
+            }).data;
+          });
+      }
 
-      <div class="footer-bottom">
-        <p>&copy; 2025 Palawan Maintenance. All rights reserved.</p>
-      </div>
-    </footer>
+      function getStatusCountsForSystem(systemKey) {
+        const map = new Map();
+        const normalizedKey = systemKey === "equipments" ? null : systemKey;
+
+        parsedCSV.forEach((row) => {
+          const id = row["Equipment"];
+          const status = row["Current Status"];
+          const system = (row["System"] || "")
+            .toLowerCase()
+            .replace(/\s+/g, "-");
+
+          if (
+            (!normalizedKey || system === normalizedKey) &&
+            id &&
+            !map.has(id)
+          ) {
+            map.set(id, status);
+          }
+        });
+
+        const counts = { Operational: 0, Sustainable: 0, Breakdown: 0 };
+        for (const status of map.values()) {
+          if (status === "0") counts.Operational++;
+          else if (status === "1") counts.Sustainable++;
+          else if (status === "2") counts.Breakdown++;
+        }
+        return counts;
+      }
+
+      function drawPieChart(systemId) {
+        const counts = getStatusCountsForSystem(systemId);
+
+        document.getElementById(`${systemId}-operational`).textContent =
+          counts.Operational;
+        document.getElementById(`${systemId}-sustainable`).textContent =
+          counts.Sustainable;
+        document.getElementById(`${systemId}-breakdown`).textContent =
+          counts.Breakdown;
+
+        const data = google.visualization.arrayToDataTable([
+          ["Status", "Count"],
+          ["Operational", counts.Operational],
+          ["Sustainable", counts.Sustainable],
+          ["Breakdown", counts.Breakdown],
+        ]);
+
+        const chart = new google.visualization.PieChart(
+          document.getElementById(`${systemId}-pie`)
+        );
+
+        chart.draw(data, {
+          title: "Equipment Status Overview",
+          pieHole: 0.4,
+          colors: ["#28a745", "#ffc107", "#dc3545"],
+          legend: { position: "none" },
+        });
+      }
+
+      function showTab(event, tabId) {
+        // Hide all tab contents
+        document.querySelectorAll(".tab-content").forEach((div) => {
+          div.style.display = "none";
+        });
+
+        // Remove active class from all buttons
+        document.querySelectorAll(".tab-button").forEach((btn) => {
+          btn.classList.remove("active");
+        });
+
+        // Show the selected tab and mark the button active
+        document.getElementById(tabId).style.display = "block";
+        event.target.classList.add("active");
+
+        // Wait a bit to ensure the tab is visible before drawing the chart
+        setTimeout(() => {
+          drawPieChart(tabId);
+        }, 200); // 200ms delay should be enough
+      }
+
+      // Load CSV + Google Charts on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        google.charts.load("current", { packages: ["corechart"] });
+        google.charts.setOnLoadCallback(() => {
+          loadCSV().then(() => {
+            drawPieChart("equipments"); // Default tab
+          });
+        });
+      });
+    </script>
 
     <script>
       const navbar = document.getElementById("navbar");
@@ -187,7 +286,10 @@
           .forEach((btn) => btn.classList.remove("active"));
         document.getElementById(tabId).style.display = "block";
         event.target.classList.add("active");
+
+        renderStatusOverview(tabId);
       }
+
       // Toggle mobile nav menu
       document.addEventListener("DOMContentLoaded", function () {
         const hamburger = document.getElementById("hamburger");
@@ -229,6 +331,39 @@
           });
         });
       });
+      document.addEventListener("DOMContentLoaded", function () {
+        renderStatusOverview("equipments"); // First tab
+      });
     </script>
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-left">
+          <h3>Palawan Maintenance</h3>
+          <p>Narra Thermal 1, Aborlan Bunker 1, HS Diesel PP</p>
+          <p>DMCI Power Corporation – Palawan Operations</p>
+        </div>
+
+        <div class="footer-center">
+          <p><strong>Email:</strong> maintenance@dmcipower.com</p>
+          <p><strong>Phone:</strong> +63 (48) 123-4567</p>
+          <p><strong>Office Hours:</strong> Mon–Fri, 8:00AM–5:00PM</p>
+        </div>
+
+        <div class="footer-right">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="equipment-status.html">Equipment Status</a></li>
+            <li><a href="#">Maintenance Schedule</a></li>
+            <li><a href="#">History Records</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2025 Palawan Maintenance. All rights reserved.</p>
+      </div>
+    </footer>
   </body>
 </html>
