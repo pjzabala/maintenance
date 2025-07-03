@@ -1,3 +1,5 @@
+<!-- ✅ START OF UPDATED FULL HTML WITH FIXED PIE CHART LOGIC -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -19,15 +21,11 @@
       type="text/javascript"
       src="https://www.gstatic.com/charts/loader.js"
     ></script>
-    <script
-      type="text/javascript"
-      src="https://www.gstatic.com/charts/loader.js"
-    ></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
+
   <body class="equipment-status-page">
-    <!-- NAVBAR -->
+    <header>
+      <!-- NAVBAR -->
     <header>
       <div class="navbar" id="navbar">
         <div class="nav-left">
@@ -76,10 +74,7 @@
     </header>
 
     <main class="equipment-status-page">
-      <!-- PAGE TITLE -->
       <div class="page-title">NARRA THERMAL 1 EQUIPMENT STATUS</div>
-
-      <!-- TAB SELECTION -->
       <div class="tabs">
         <script>
           const tabs = [
@@ -113,7 +108,6 @@
       </div>
     </main>
 
-    <!-- TAB CONTENTS -->
     <script>
       const reports = {
         equipments: "d352150b-4e89-4001-81b2-de867e297a8c/page/FgoMF",
@@ -135,31 +129,28 @@
 
       for (const [id, path] of Object.entries(reports)) {
         document.write(`
-      <div class="tab-content" id="${id}" style="display: ${
+          <div class="tab-content" id="${id}" style="display: ${
           id === "equipments" ? "block" : "none"
-        }; margin-bottom: 100px;">
-
-        <iframe
-          src="https://lookerstudio.google.com/embed/reporting/${path}?hl=en&locale=en_US"
-          width="100%"
-          height="1000"
-          style="border:1px solid #ccc; border-radius:12px"
-          allowfullscreen>
-        </iframe>
-
-        <!-- 🔽 STATUS OVERVIEW CONTAINER -->
-        <div class="status-overview-container">
-          <div class="chart-count-summary">
-            <div class="card operational">🟢 Operational: <span id="${id}-operational">0</span></div>
-            <div class="card sustainable">🟡 Sustainable: <span id="${id}-sustainable">0</span></div>
-            <div class="card breakdown">🔴 Breakdown: <span id="${id}-breakdown">0</span></div>
+        };">
+            <iframe
+              src="https://lookerstudio.google.com/embed/reporting/${path}?hl=en&locale=en_US"
+              width="100%"
+              height="1000"
+              style="border:1px solid #ccc; border-radius:12px"
+              allowfullscreen>
+            </iframe>
+            <div class="status-overview-container">
+              <div class="chart-count-summary">
+                <div class="card operational">🟢 Operational: <span id="${id}-operational">0</span></div>
+                <div class="card sustainable">🟡 Sustainable: <span id="${id}-sustainable">0</span></div>
+                <div class="card breakdown">🔴 Breakdown: <span id="${id}-breakdown">0</span></div>
+              </div>
+              <div class="pie-chart-wrapper">
+                <div id="${id}-pie" class="pie-chart-div" style="width: 400px; height: 300px;"></div>
+              </div>
+            </div>
           </div>
-          <div class="pie-chart-wrapper">
-            <div id="${id}-pie" class="pie-chart-div"></div>
-          </div>
-        </div>
-      </div>
-    `);
+        `);
       }
     </script>
 
@@ -167,59 +158,82 @@
       const csvUrl =
         "https://docs.google.com/spreadsheets/d/e/2PACX-1vRI4YerzHu4mr6hT73gPjJDaWV1BNncnXPl8dzEyPl-R0TYaJc4NLI8a_36KgJ61N64dnYPJ3Auob3U/pub?gid=698619125&single=true&output=csv";
 
+      const tabSystemGroups = {
+        equipments: null,
+        "bottom-ash": [
+          "Bottom Ash System",
+          "Fly Ash System",
+          "Limestone Handling System",
+          "Industrial Water Reuse System",
+        ],
+        combustion: ["Combustion System", "Coal Pipe System"],
+        wts: ["Water Treatment System"],
+        sws: [
+          "Feedwater System",
+          "Boiler Blowdown System",
+          "Deaerator System",
+          "Turbine Condensation Water System",
+        ],
+        sccws: [
+          "Circulating Water System",
+          "Close Circulating Water System",
+          "Closed Circulating Water System",
+        ],
+        cbhs: ["Coal Handling System", "Biomass Handling System"],
+        cas: ["Compressed Air System"],
+        fps: ["Fire Fighting System", "Fire Detection & Alarm System"],
+        tls: ["Turbine Oil System"],
+        cs: ["Electro-Chlorination Water System"],
+        electrical: ["MV & LV Electrical"],
+        substation: ["Substation"],
+        "heavy-equipment": ["Heavy Equipment"],
+        switchyard: ["Switchyard"],
+      };
+
       let parsedCSV = [];
 
-      // Load CSV once
-      function loadCSV() {
-        return fetch(csvUrl)
-          .then((res) => res.text())
-          .then((text) => {
-            parsedCSV = Papa.parse(text, {
-              header: true,
-              skipEmptyLines: true,
-            }).data;
-          });
+      async function loadCSV() {
+        const res = await fetch(csvUrl);
+        const text = await res.text();
+        parsedCSV = Papa.parse(text, {
+          header: true,
+          skipEmptyLines: true,
+        }).data;
       }
 
-      function getStatusCountsForSystem(systemKey) {
-        const map = new Map();
-        const normalizedKey = systemKey === "equipments" ? null : systemKey;
-
-        parsedCSV.forEach((row) => {
-          const id = row["Equipment"];
-          const status = row["Current Status"];
-          const system = (row["System"] || "")
-            .toLowerCase()
-            .replace(/\s+/g, "-");
-
-          if (
-            (!normalizedKey || system === normalizedKey) &&
-            id &&
-            !map.has(id)
-          ) {
-            map.set(id, status);
-          }
-        });
-
+      function getLatestStatusCounts(tabKey) {
+        const groups = tabSystemGroups[tabKey];
+        const seen = new Set();
         const counts = { Operational: 0, Sustainable: 0, Breakdown: 0 };
-        for (const status of map.values()) {
-          if (status === "0") counts.Operational++;
-          else if (status === "1") counts.Sustainable++;
-          else if (status === "2") counts.Breakdown++;
+
+        for (let i = parsedCSV.length - 1; i >= 0; i--) {
+          const row = parsedCSV[i];
+          const id = row["Equipment"];
+          const system = row["System"];
+          const status = row["Current Status"];
+
+          if (!id || seen.has(id)) continue;
+          const match = !groups || groups.includes(system?.trim());
+
+          if (match) {
+            seen.add(id);
+            if (status === "0") counts.Operational++;
+            else if (status === "1") counts.Sustainable++;
+            else if (status === "2") counts.Breakdown++;
+          }
         }
+
         return counts;
       }
 
-      function drawPieChart(systemId) {
-        const counts = getStatusCountsForSystem(systemId);
-
-        document.getElementById(`${systemId}-operational`).textContent =
+      function drawPieChart(tabId) {
+        const counts = getLatestStatusCounts(tabId);
+        document.getElementById(`${tabId}-operational`).textContent =
           counts.Operational;
-        document.getElementById(`${systemId}-sustainable`).textContent =
+        document.getElementById(`${tabId}-sustainable`).textContent =
           counts.Sustainable;
-        document.getElementById(`${systemId}-breakdown`).textContent =
+        document.getElementById(`${tabId}-breakdown`).textContent =
           counts.Breakdown;
-        document.getElementById(`${systemId}-pie`).style.display = "block";
 
         const data = google.visualization.arrayToDataTable([
           ["Status", "Count"],
@@ -229,11 +243,10 @@
         ]);
 
         const chart = new google.visualization.PieChart(
-          document.getElementById(`${systemId}-pie`)
+          document.getElementById(`${tabId}-pie`)
         );
-
         chart.draw(data, {
-          title: "Equipment Status Overview",
+          title: "Equipment Status",
           pieHole: 0.4,
           colors: ["#28a745", "#ffc107", "#dc3545"],
           legend: { position: "none" },
@@ -241,93 +254,26 @@
       }
 
       function showTab(event, tabId) {
-        // Hide all tab contents
-        document.querySelectorAll(".tab-content").forEach((div) => {
-          div.style.display = "none";
-        });
-
-        // Remove active class from all buttons
-        document.querySelectorAll(".tab-button").forEach((btn) => {
-          btn.classList.remove("active");
-        });
-
-        // Show the selected tab and mark the button active
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((div) => (div.style.display = "none"));
+        document
+          .querySelectorAll(".tab-button")
+          .forEach((btn) => btn.classList.remove("active"));
         document.getElementById(tabId).style.display = "block";
         event.target.classList.add("active");
-
-        // Wait a bit to ensure the tab is visible before drawing the chart
-        setTimeout(() => {
-          drawPieChart(tabId);
-        }, 200); // 200ms delay should be enough
+        setTimeout(() => drawPieChart(tabId), 200);
       }
 
-      // Load CSV + Google Charts on page load
-      document.addEventListener("DOMContentLoaded", function () {
+      document.addEventListener("DOMContentLoaded", () => {
         google.charts.load("current", { packages: ["corechart"] });
-        google.charts.setOnLoadCallback(() => {
-          loadCSV().then(() => {
-            drawPieChart("equipments"); // Default tab
-          });
+        google.charts.setOnLoadCallback(async () => {
+          await loadCSV();
+          drawPieChart("equipments");
         });
       });
     </script>
 
-    <script>
-      const navbar = document.getElementById("navbar");
-      window.addEventListener("scroll", () => {
-        navbar.classList.toggle("scrolled", window.scrollY > 50);
-      });
-
-      // Toggle mobile nav menu
-      document.addEventListener("DOMContentLoaded", function () {
-        const hamburger = document.getElementById("hamburger");
-        const navRight = document.querySelector(".nav-right");
-
-        // Toggle mobile nav menu
-        hamburger.addEventListener("click", () => {
-          navRight.classList.toggle("active");
-        });
-
-        // Close menu when clicking outside
-        document.addEventListener("click", function (event) {
-          const isClickInsideMenu = navRight.contains(event.target);
-          const isClickOnHamburger = hamburger.contains(event.target);
-
-          if (!isClickInsideMenu && !isClickOnHamburger) {
-            navRight.classList.remove("active");
-          }
-        });
-
-        // Dropdown logic
-        const dropdownWrappers = document.querySelectorAll(".dropdown-wrapper");
-        dropdownWrappers.forEach((wrapper) => {
-          const dropdown = wrapper.querySelector(".dropdown");
-
-          wrapper.addEventListener("click", (e) => {
-            e.stopPropagation();
-            document.querySelectorAll(".dropdown").forEach((d) => {
-              if (d !== dropdown) d.style.display = "none";
-            });
-            dropdown.style.display =
-              dropdown.style.display === "block" ? "none" : "block";
-          });
-        });
-
-        document.addEventListener("click", () => {
-          document.querySelectorAll(".dropdown").forEach((dropdown) => {
-            dropdown.style.display = "none";
-          });
-        });
-      });
-      document.addEventListener("DOMContentLoaded", function () {
-        renderStatusOverview("equipments"); // First tab
-      });
-
-      function renderStatusOverview(systemId) {
-        drawPieChart(systemId);
-      }
-    </script>
-    <!-- FOOTER -->
     <footer class="footer">
       <div class="footer-content">
         <div class="footer-left">
