@@ -1,9 +1,10 @@
 .footer {
   background-color: #222;
   color: #eee;
-  padding: 40px 20px 20px;
-  font-size: 14px;
-  margin-top: 500px;
+  padding: 20px 0;
+  text-align: center;
+
+  flex-shrink: 0; /* Prevent footer from shrinking */
 }
 
 .footer-content {

@@ -107,6 +107,8 @@ body.equipment-status-page .dropdown p:hover {
   margin: auto;
   padding: 5px;
   max-height: 1200px;
+  min-height: 80vh; /* takes at least 80% of viewport height */
+  padding-bottom: 600px;
 }
 
 .chart-summary {
@@ -121,7 +123,6 @@ body.equipment-status-page .dropdown p:hover {
   flex-direction: column;
   align-items: center;
   margin-top: 1.5rem;
-  padding: 1.5rem 1rem;
   border-top: 1px solid #ffffff;
   background-color: #ffffff;
   border-radius: 12px;
@@ -165,13 +166,13 @@ body.equipment-status-page .dropdown p:hover {
 
 .pie-chart-wrapper {
   width: 100%;
-  max-width: 400px;
-  margin-bottom: 1rem; /* ✅ Prevents overlap with footer */
+  max-width: 800px; /* ✅ match or exceed chart size */
+  margin-bottom: 1rem;
 }
+
 .pie-chart-div {
-  width: 100%;
-  max-width: 600px;
-  height: 400px;
+  width: 700px;
+  height: 500px;
   margin: 0 auto;
 }
 .system-pie-chart {

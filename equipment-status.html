@@ -26,7 +26,6 @@
   <body class="equipment-status-page">
     <header>
       <!-- NAVBAR -->
-    <header>
       <div class="navbar" id="navbar">
         <div class="nav-left">
           <!-- Hamburger Menu Icon -->
@@ -109,6 +108,27 @@
     </main>
 
     <script>
+      // Dropdown behavior
+      const dropdownWrappers = document.querySelectorAll(".dropdown-wrapper");
+      dropdownWrappers.forEach((wrapper) => {
+        const dropdown = wrapper.querySelector(".dropdown");
+
+        wrapper.addEventListener("click", (e) => {
+          e.stopPropagation();
+          document.querySelectorAll(".dropdown").forEach((d) => {
+            if (d !== dropdown) d.style.display = "none";
+          });
+          dropdown.style.display =
+            dropdown.style.display === "block" ? "none" : "block";
+        });
+      });
+
+      document.addEventListener("click", () => {
+        document.querySelectorAll(".dropdown").forEach((dropdown) => {
+          dropdown.style.display = "none";
+        });
+      });
+
       const reports = {
         equipments: "d352150b-4e89-4001-81b2-de867e297a8c/page/FgoMF",
         "bottom-ash": "599ffaca-2a41-4b85-85ec-b821f6d9eb67/page/0LnXE",
@@ -146,7 +166,7 @@
                 <div class="card breakdown">🔴 Breakdown: <span id="${id}-breakdown">0</span></div>
               </div>
               <div class="pie-chart-wrapper">
-                <div id="${id}-pie" class="pie-chart-div" style="width: 400px; height: 300px;"></div>
+                <div id="${id}-pie" class="pie-chart-div"></div>
               </div>
             </div>
           </div>
@@ -246,10 +266,13 @@
           document.getElementById(`${tabId}-pie`)
         );
         chart.draw(data, {
-          title: "Equipment Status",
+          title: "Equipment Status Overview",
           pieHole: 0.4,
+          width: 700, // Explicit width
+          height: 500, // Explicit height
+          chartArea: { width: "90%", height: "90%" },
           colors: ["#28a745", "#ffc107", "#dc3545"],
-          legend: { position: "none" },
+          legend: { position: "bottom" },
         });
       }
 
