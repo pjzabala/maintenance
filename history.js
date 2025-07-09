@@ -72,10 +72,8 @@ function renderGroupedChart(groupedData) {
     return { system, ...counts, total };
   });
 
-  // Sort by total count descending
   sortable.sort((a, b) => b.total - a.total);
 
-  // ⬇️ Limit to top N systems (e.g., top 10)
   const topN = 10;
   const limited = sortable.slice(0, topN);
 
@@ -122,7 +120,21 @@ function renderGroupedChart(groupedData) {
       responsive: true,
       plugins: {
         legend: { position: "top" },
-        title: { display: true, text: `Top ${topN} Systems by Maintenance Count` },
+        title: {
+          display: true,
+          text: `History Records`,
+        },
+        datalabels: {
+          color: "#fff",
+          anchor: "center",
+          align: "center",
+          font: {
+            weight: "bold",
+            size: 12,
+            family: "monospace",
+          },
+          formatter: Math.round,
+        },
       },
       scales: {
         y: {
@@ -135,6 +147,7 @@ function renderGroupedChart(groupedData) {
         },
       },
     },
+    plugins: [ChartDataLabels]
   });
 }
 
@@ -165,12 +178,10 @@ function groupByYearAndMaintenance(data) {
 }
 
 function renderYearlyTrendChart(filteredData) {
-  const selectedYears = getSelectedValues("filter-year"); // selected year(s)
+  const selectedYears = getSelectedValues("filter-year");
   const yearCounts = groupByYearAndMaintenance(filteredData);
 
   let years = Object.keys(yearCounts).sort();
-
-  // ⬇️ Show only selected years if there are any
   if (selectedYears.length > 0) {
     years = years.filter((y) => selectedYears.includes(y));
   }
@@ -231,7 +242,10 @@ function renderYearlyTrendChart(filteredData) {
         },
         title: {
           display: true,
-          text: "Yearly Maintenance Trend",
+          text:
+            selectedYears.length > 0
+              ? `Maintenance Trend for ${selectedYears.join(", ")}`
+              : "Yearly Maintenance Trend",
           font: { size: 18, family: "Oswald" },
           padding: { top: 10, bottom: 20 },
         },
@@ -241,30 +255,34 @@ function renderYearlyTrendChart(filteredData) {
           cornerRadius: 6,
           padding: 10,
         },
+        datalabels: {
+          color: "#fff", // light text inside bars
+          anchor: "center",
+          align: "center",
+          font: {
+            size: 13,
+            family: "monospace",
+            weight: "bold",
+          },
+          formatter: (value) => (value > 0 ? value : ""),
+        },
       },
       scales: {
         x: {
-          ticks: {
-            font: { family: "monospace", size: 12 },
-          },
-          grid: {
-            display: false,
-          },
+          ticks: { font: { family: "monospace", size: 12 } },
+          grid: { display: false },
         },
         y: {
           beginAtZero: true,
-          ticks: {
-            stepSize: 1,
-            font: { family: "monospace", size: 12 },
-          },
-          grid: {
-            color: "#f0f0f0",
-          },
+          ticks: { stepSize: 1, font: { family: "monospace", size: 12 } },
+          grid: { color: "#f0f0f0" },
         },
       },
     },
+    plugins: [ChartDataLabels],
   });
 }
+
 
 
 
