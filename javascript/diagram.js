@@ -55,28 +55,20 @@ function updateDiagram() {
 
   container.classList.remove("no-diagram");
 
-  diagram.innerHTML = ""; // Clear early
+  const imagePath = `systems/${selectedSystemTab}`;
+  const img = new Image();
+  img.onload = () => {
+    container.style.backgroundImage = `url("${imagePath}.jpg")`;
+  };
+  img.onerror = () => {
+    container.style.backgroundImage = `url("${imagePath}.png")`;
+  };
+  img.src = `${imagePath}.jpg`;
 
-const imagePath = `systems/${selectedSystemTab}`;
-const img = new Image();
+  diagram.innerHTML = `<div class="equipment-list-button" onclick="currentDiagramEquipment=''; diagramWRStatus=''; showSystemEquipmentList('${selectedSystemTab}')">EQUIPMENT LIST</div>`;
 
-img.onload = () => {
-  container.style.backgroundImage = `url("${img.src}")`;
 
-  // ✅ Once image is ready, then render status indicators
-  renderStatusIndicators();
-};
 
-img.onerror = () => {
-  img.src = `${imagePath}.png`;
-};
-
-img.src = `${imagePath}.jpg`;
-
-// Just sets button early
-diagram.innerHTML = `<div class="equipment-list-button" onclick="currentDiagramEquipment=''; diagramWRStatus=''; showSystemEquipmentList('${selectedSystemTab}')">EQUIPMENT LIST</div>`;
-
-  function renderStatusIndicators() {
   const systemNames = systemGroups[selectedSystemTab] || [];
   const { latestStatusMap, breakdownMap } = getLatestStatusAndBreakdown(rows, systemNames);
   const currentPositionMap = positionMaps[selectedSystemTab] || {};
@@ -111,37 +103,26 @@ diagram.innerHTML = `<div class="equipment-list-button" onclick="currentDiagramE
       document.getElementById("diagram-modal-title").textContent = label;
       document.getElementById("diagram-modal").classList.remove("hidden");
 
+      // Set filter buttons for equipment modal
       const pendingBtn = document.getElementById("diagram-pending-btn");
       const doneBtn = document.getElementById("diagram-done-btn");
 
-      pendingBtn.onclick = () => {
-        diagramWRStatus =
-          diagramWRStatus.toLowerCase() === "pending" ? "" : "Pending";
-        updateDiagramModalTable();
-      };
+if (!currentDiagramEquipment) {
+  pendingBtn.onclick = () => {
+    showSystemEquipmentList(systemTabId, "Pending");
+  };
+  doneBtn.onclick = () => {
+    showSystemEquipmentList(systemTabId, "Done");
+  };
+}
 
-      doneBtn.onclick = () => {
-        diagramWRStatus =
-          diagramWRStatus.toLowerCase() === "done" ? "" : "Done";
-        updateDiagramModalTable();
-      };
+
 
       updateFilterButtonStates();
     });
 
     diagram.appendChild(div);
   }
-
-  const legend = document.createElement("div");
-  legend.className = "legend";
-  legend.innerHTML = `
-    <div><span class="legend-dot operational"></span>🟢 Operational</div>
-    <div><span class="legend-dot sustainable"></span>🟡 Sustainable</div>
-    <div><span class="legend-dot breakdown"></span>🔴 Breakdown</div>
-  `;
-  diagram.appendChild(legend);
-}
-
 
   const legend = document.createElement("div");
   legend.className = "legend";
