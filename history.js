@@ -67,22 +67,37 @@ function groupBySystemAndMaintenance(data) {
 }
 
 function renderGroupedChart(groupedData) {
+  const priorityOrder = [
+    "Slag Removal System",
+    "Fly Ash Handling System",
+    "Limestone Handling System",
+    "Combustion System",
+    "Water Treatment System",
+    "Coal Handling System",
+    "Biomass Handling System",
+    "Feedwater System",
+    "Circulating Water System",
+    "Close Circulating Cooling Water System"
+  ];
+
   const sortable = Object.entries(groupedData).map(([system, counts]) => {
     const total = counts.Preventive + counts.Corrective + counts.Modification;
     return { system, ...counts, total };
   });
 
-  // ✅ Sort by Preventive count (descending)
-sortable.sort((a, b) => b.Preventive - a.Preventive);
+  // Filter and sort priority systems by Preventive count
+  const priorityItems = priorityOrder
+    .map(name => sortable.find(item => item.system === name))
+    .filter(Boolean)
+    .sort((a, b) => b.Preventive - a.Preventive); // 🔼 sort by Preventive
 
+  // Fill up to 10 items
+  const combined = priorityItems.slice(0, 10);
 
-  const topN = 10;
-  const limited = sortable.slice(0, topN);
-
-  const systems = limited.map((item) => item.system);
-  const preventiveData = limited.map((item) => item.Preventive);
-  const correctiveData = limited.map((item) => item.Corrective);
-  const modificationData = limited.map((item) => item.Modification);
+  const systems = combined.map((item) => item.system);
+  const preventiveData = combined.map((item) => item.Preventive);
+  const correctiveData = combined.map((item) => item.Corrective);
+  const modificationData = combined.map((item) => item.Modification);
 
   const ctx = document.getElementById("maintenanceChart").getContext("2d");
   if (currentChart) currentChart.destroy();
