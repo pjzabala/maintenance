@@ -6,6 +6,15 @@ body.equipment-status-page .navbar .nav-title {
   transition: color 0.3s ease;
 }
 
+.page-title {
+  margin-top: 100px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #000000;
+  font-family: "Oswald", sans-serif;
+}
+
 /* Change to white when scrolled */
 body.equipment-status-page .navbar.scrolled .nav-title {
   color: white;

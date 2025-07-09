@@ -1,95 +1,121 @@
+/* === Base Styles === */
 body {
   font-family: "Segoe UI", sans-serif;
-  background: #f4f6f9;
+  background-color: #f4f6f9;
   margin: 0;
   padding: 20px;
 }
+
 .dashboard-container {
-  max-width: 960px;
+  max-width: 1200px;
+  max-height: 2000px;
   margin: auto;
+  padding: 16px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
+
+/* === Tab Buttons === */
+.tab-buttons-container {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1px;
+}
+
+.tab-button {
+  padding: 12px;
+  background-color: rgba(0, 123, 255, 0.1);
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.tab-button:hover {
+  background-color: #00bcd4;
+  color: white;
+}
+
+/* === Summary Cards === */
 .summary-cards {
   display: flex;
   gap: 10px;
   justify-content: space-between;
   flex-wrap: wrap;
 }
+
 .card {
   background: white;
-  border-radius: 8px;
-  padding: 10px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   flex: 1 1 30%;
+  padding: 12px;
+  border-radius: 8px;
   text-align: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
+
 .card h2 {
   margin: 0;
   font-size: 26px;
 }
+
 .card p {
   margin: 4px 0 0;
   font-size: 14px;
   color: #555;
 }
+
+/* === Containers (Chart + Table) === */
 .chart-container {
   background: white;
   border-radius: 10px;
-  padding: 10px;
+  padding: 20px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  overflow: auto;
+  overflow: hidden;
+  box-sizing: border-box;
 }
+
+.chart-container + .chart-container {
+  margin-top: 20px;
+}
+
+/* === Chart Navigation === */
 .chart-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 10px;
 }
+
 #barChart {
   height: 300px;
 }
-.equipment-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: white;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  overflow: hidden;
-  font-size: 14px;
-  margin-top: 20px;
-}
 
-.equipment-table th,
-.equipment-table td {
-  padding: 8px 12px;
-  border-bottom: 1px solid #eee;
-  text-align: left;
-}
-.equipment-table th {
-  background-color: #f9fafc;
-}
-
-.equipment-table-wrapper {
-  max-height: 400px;
+/* === Equipment Table Styles === */
+.table-wrapper {
+  height: 625px;
   overflow-y: auto;
-  border: 1px solid #454545;
-}
-
-.problem-table thead th {
-  position: sticky;
-  top: 0;
-  background: #000000;
-  z-index: 1;
-  color: white;
-  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: white;
 }
 
 .problem-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
-  table-layout: auto;
+  table-layout: fixed; /* Makes all columns equal width */
 }
 
 .problem-table thead th {
@@ -99,15 +125,19 @@ body {
   color: white;
   padding: 10px;
   text-align: left;
-  z-index: 1;
+  z-index: 2;
 }
 
-/* Add spacing between columns */
 .problem-table th,
 .problem-table td {
-  padding: 8px 12px;
+  word-wrap: break-word;
   white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
   vertical-align: top;
+  padding: 6px;
+  font-size: 14px;
+  text-align: left;
 }
 
 .problem-table tbody tr:nth-child(odd) {
@@ -119,7 +149,6 @@ body {
   color: white;
 }
 
-/* Optional: clickable links in blue rows */
 .problem-table tbody tr:nth-child(even) a {
   color: #bde0ff;
   text-decoration: none;
@@ -135,21 +164,102 @@ body {
 
 .problem-table td:first-child,
 .problem-table th:first-child {
-  white-space: nowrap; /* Keep date on one line */
-  width: 120px; /* Set fixed width for date column */
-  text-align: left; /* Optional: align left for better readability */
+  white-space: nowrap;
+  width: 120px;
 }
 
-/* Make table wrapper fill screen height and allow scroll */
-.equipment-scroll-container {
-  flex-grow: 1;
+/* === Filters and Buttons === */
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.filters select,
+.filter-row select {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* === WR Status Buttons === */
+.wr-btn {
+  padding: 6px 14px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 6px;
+  font-size: 14px;
+}
+
+.wr-btn.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+/* === Image Modal === */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  padding-top: 60px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content {
+  display: block;
+  margin: auto;
+  max-width: 90%;
+  max-height: 80%;
+  border-radius: 6px;
+  box-shadow: 0 0 10px #fff;
+}
+
+.modal-close {
+  position: absolute;
+  top: 30px;
+  right: 40px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* === Responsive Adjustment === */
+@media (max-width: 768px) {
+  .tab-buttons-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .summary-cards {
+    flex-direction: column;
+  }
+}
+
+#statusChart {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  padding: 20px;
+  min-height: auto;
+  box-sizing: border-box;
+}
+
+/* Each pie chart block */
+.pie-chart-block {
+  width: 100%;
+  max-width: 400px;
+  flex: 1 1 45%;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 400px); /* Adjust based on other content height */
-}
-
-.table-wrapper {
-  max-height: 60vh; /* or adjust as needed */
-  overflow-y: auto;
-  border-radius: 6px;
+  align-items: center;
 }

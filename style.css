@@ -10,19 +10,15 @@ html {
   scroll-behavior: smooth;
 }
 
-body:not(.equipment-status-page) main {
-  background-color: darkblue;
-}
-
 .hero-section {
-  background-image: url(main.jpg);
+  background-image: url(bg/main.jpg);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
 .mission-block {
-  background-image: url(bg.png);
+  background-image: url(bg/bg.png);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -30,7 +26,7 @@ body:not(.equipment-status-page) main {
 }
 
 .vision-block {
-  background-image: url(all.jpg);
+  background-image: url(bg/all.jpg);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -221,14 +217,6 @@ iframe {
   margin-top: 60px;
 }
 
-.page-title {
-  margin-top: 100px;
-  text-align: center;
-  font-size: 24px;
-  font-weight: bold;
-  color: #000000;
-  font-family: "Oswald", sans-serif;
-}
 .navbar.scrolled .nav-left span,
 .navbar.scrolled .nav-right > .nav-item,
 .navbar.scrolled .nav-right > .nav-item > a {

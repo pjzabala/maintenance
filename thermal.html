@@ -8,274 +8,645 @@
       type="text/javascript"
       src="https://www.gstatic.com/charts/loader.js"
     ></script>
-    <style></style>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      main {
+        flex: 1;
+      }
+    </style>
   </head>
   <body>
     <div class="dashboard-container">
+      <!-- Tab Buttons -->
+      <div class="tab-buttons-container">
+        <script>
+          const tabs = [
+            ["equipments", "Equipment List"],
+            ["bottom-ash", "Bottom Ash System"],
+            ["combustion", "Combustion System"],
+            ["wts", "Water Treatment"],
+            ["sws", "Steam and Water"],
+            ["sccws", "Seawater & CCW"],
+            ["cbhs", "Coal & Biomass Handling"],
+            ["cas", "Compressed Air"],
+            ["fps", "Fire Protection"],
+            ["tls", "Turbine Lubrication"],
+            ["cs", "Chlorination System"],
+            ["electrical", "MV & LV Electrical"],
+            ["substation", "Substation"],
+            ["heavy-equipment", "Heavy Equipment"],
+            ["switchyard", "Switchyard"],
+          ];
+          document.write(
+            tabs
+              .map(
+                ([id, label], i) =>
+                  `<button class="tab-button${
+                    i === 0 ? " active" : ""
+                  }" onclick="showTab(event, '${id}')">${label}</button>`
+              )
+              .join("")
+          );
+        </script>
+      </div>
+      <!-- Filters and WR Buttons -->
+      <div class="chart-container">
+        <div class="filters">
+          <div class="filter-row">
+            <label>System:</label>
+            <select id="systemFilter" onchange="applyTableFilters()"></select>
+
+            <label>Equipment:</label>
+            <select
+              id="equipmentFilter"
+              onchange="applyTableFilters()"
+            ></select>
+
+            <label>WR Status:</label>
+            <div class="filter-row">
+              <button
+                class="wr-btn"
+                id="btnAll"
+                data-status=""
+                onclick="setWrStatusFilter('')"
+              >
+                All
+              </button>
+              <button
+                class="wr-btn"
+                id="btnPending"
+                data-status="Pending"
+                onclick="setWrStatusFilter('Pending')"
+              >
+                Pending
+              </button>
+              <button
+                class="wr-btn"
+                id="btnDone"
+                data-status="Done"
+                onclick="setWrStatusFilter('Done')"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Equipment Table -->
+      <div class="table-wrapper">
+        <table class="problem-table" id="equipmentTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Work Order No.</th>
+              <th>Equipment</th>
+              <th>Sub-Component</th>
+              <th>Brief Description</th>
+              <th>Detailed Description</th>
+              <th>Severity</th>
+              <th>Planning Remarks</th>
+              <th>WR Status</th>
+              <th>Images</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
       <!-- Summary Cards -->
       <div class="summary-cards">
-        <div class="card" style="border-top: 4px solid #28a745">
+        <div class="card">
           <h2 id="opCount">0</h2>
           <p>Operational</p>
         </div>
-        <div class="card" style="border-top: 4px solid #ffc107">
+        <div class="card">
           <h2 id="susCount">0</h2>
           <p>Sustainable</p>
         </div>
-        <div class="card" style="border-top: 4px solid #dc3545">
+        <div class="card">
           <h2 id="brkCount">0</h2>
           <p>Breakdown</p>
         </div>
       </div>
 
-      <!-- Doughnut Chart -->
+      <!-- Chart Container -->
       <div class="chart-container">
-        <div id="statusChart" style="height: 280px"></div>
+        <div
+          id="statusChart"
+          style="
+            width: 100%;
+            min-height: 800px;
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+          "
+        ></div>
       </div>
 
-      <!-- Problem Bar Graph per System -->
+      <!-- Bar Chart Navigation -->
       <div class="chart-container">
         <div class="chart-nav">
-          <button onclick="prevSystem()">❮</button>
-          <h3 id="systemTitle">Combustion System</h3>
-          <button onclick="nextSystem()">❯</button>
+          <button onclick="prevSystem()">&#8592; Prev</button>
+          <h3 id="systemTitle">System</h3>
+          <button onclick="nextSystem()">Next &#8594;</button>
         </div>
         <div id="barChart"></div>
       </div>
-
-      <!-- Equipment Table -->
-      <div class="chart-container">
-        <h3>Equipment List</h3>
-        <div class="table-wrapper">
-          <table class="problem-table" id="equipmentTable">
-            <thead>
-              <tr>
-                <th>Timestamp</th>
-                <th>Work Order Num</th>
-                <th>Equipment</th>
-                <th>Sub-Component</th>
-                <th>Brief Description</th>
-                <th>Detailed Description</th>
-                <th>Severity</th>
-                <th>Planning Remarks</th>
-                <th>WR Status</th>
-                <th>Pictures</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
     </div>
-  </body>
 
-  <script type="text/javascript">
-    google.charts.load("current", { packages: ["corechart"] });
-    google.charts.setOnLoadCallback(drawFromSheet);
+    <!-- Modal for Image View -->
+    <div id="imageModal" class="modal">
+      <span class="modal-close" onclick="closeModal()">×</span>
+      <img class="modal-content" id="modalImage" />
+    </div>
 
-    let groupedProblems = {};
-    let systems = [];
-    let currentSystemIndex = 0;
+    <script>
+      const tabSystemGroups = {
+        equipments: null,
+        "bottom-ash": [
+          "Slag Removal System",
+          "Fly Ash Handling System",
+          "Limestone Handling System",
+          "Industrial Water Reuse System",
+        ],
+        combustion: ["Combustion System", "Coal Pipe System"],
+        wts: ["Water Treatment System"],
+        sws: [
+          "Feedwater System",
+          "Boiler Blowdown System",
+          "Deaerator System",
+          "Turbine Condensation Water System",
+        ],
+        sccws: [
+          "Seawater & CCW",
+          "Circulating Water System",
+          "Close Circulating Cooling Water System",
+          "Closed Circulating Cooling Water System",
+        ],
+        cbhs: ["Coal Handling System", "Biomass Handling System"],
+        cas: ["Compressed Air System"],
+        fps: ["Fire Fighting System", "Fire Detection & Alarm System"],
+        tls: ["Turbine Oil System"],
+        cs: ["Electro-Chlorination Water System"],
+        electrical: ["MV & LV Electrical"],
+        substation: ["Substation"],
+        "heavy-equipment": ["Heavy Equipment"],
+        switchyard: ["Switchyard"],
+      };
 
-    function drawFromSheet() {
-      const query = new google.visualization.Query(
-        "https://docs.google.com/spreadsheets/d/1px0fxxtRmS9-otYRjlgUF2eBUvqbKBE3Y1HDPn6v200/gviz/tq?sheet=Work%20Order%20Request"
-      );
-      query.send(function (response) {
-        if (response.isError()) {
-          console.error(
-            "Error loading data:",
-            response.getMessage(),
-            response.getDetailedMessage()
-          );
+      function showTab(event, tabId) {
+        document
+          .querySelectorAll(".tab-button")
+          .forEach((btn) => btn.classList.remove("active"));
+        event.target.classList.add("active");
+
+        currentTab = tabId;
+        currentTabSystems = tabSystemGroups[tabId] || null;
+
+        drawStatusChart(); // ✅ Refresh pie chart based on selected tab
+        applyTableFilters(); // ✅ Filter table and dropdowns
+      }
+    </script>
+
+    <script type="text/javascript">
+      google.charts.load("current", { packages: ["corechart"] });
+      google.charts.setOnLoadCallback(drawFromSheet);
+
+      let groupedProblems = {};
+      let systems = [];
+      let currentSystemIndex = 0;
+      let fullData, colIndexes;
+      let currentWrStatus = ""; // holds the active filter for WR Status
+
+      function drawFromSheet() {
+        const query = new google.visualization.Query(
+          "https://docs.google.com/spreadsheets/d/1px0fxxtRmS9-otYRjlgUF2eBUvqbKBE3Y1HDPn6v200/gviz/tq?sheet=Work%20Order%20Request"
+        );
+        query.send(function (response) {
+          if (response.isError()) {
+            console.error("Error loading data:", response.getMessage());
+            return;
+          }
+          handleData(response);
+        });
+      }
+
+      function handleData(response) {
+        const data = response.getDataTable();
+        fullData = data;
+
+        let op = 0,
+          sus = 0,
+          brk = 0;
+        const latestStatusPerEquip = {};
+
+        colIndexes = {
+          timestamp: data.getColumnIndex("Timestamp"),
+          woNum: data.getColumnIndex("Work Order Num"),
+          equipment: data.getColumnIndex("Equipment"),
+          subComponent: data.getColumnIndex("Sub-Component"),
+          briefDesc: data.getColumnIndex(
+            "Brief Description of Problem or Work"
+          ),
+          detailedDesc: data.getColumnIndex("Detailed Description"),
+          severity: data.getColumnIndex("Severity"),
+          planningRemarks: data.getColumnIndex("*Planning Remarks"),
+          wrStatus: data.getColumnIndex("WR Status"),
+          images: data.getColumnIndex("Images"),
+          system: data.getColumnIndex("System"),
+          status: data.getColumnIndex("Current Status"),
+        };
+
+        groupedProblems = {};
+
+        for (let i = 0; i < data.getNumberOfRows(); i++) {
+          const timestamp = new Date(data.getValue(i, colIndexes.timestamp));
+          const equipment = data.getValue(i, colIndexes.equipment);
+          const status = data.getValue(i, colIndexes.status);
+          const detail = (
+            data.getValue(i, colIndexes.detailedDesc) || ""
+          ).toLowerCase();
+          const system = data.getValue(i, colIndexes.system) || "Uncategorized";
+
+          if (
+            !latestStatusPerEquip[equipment] ||
+            new Date(latestStatusPerEquip[equipment].timestamp) < timestamp
+          ) {
+            latestStatusPerEquip[equipment] = { status, timestamp };
+          }
+
+          if (!groupedProblems[system]) groupedProblems[system] = {};
+
+          if (
+            detail.includes("no reading") ||
+            detail.includes("no signal") ||
+            detail.includes("no input")
+          ) {
+            groupedProblems[system]["No Reading"] =
+              (groupedProblems[system]["No Reading"] || 0) + 1;
+          } else if (
+            detail.includes("unusual sound") ||
+            detail.includes("abnormal noise") ||
+            detail.includes("strange sound")
+          ) {
+            groupedProblems[system]["Unusual Sound"] =
+              (groupedProblems[system]["Unusual Sound"] || 0) + 1;
+          } else if (detail.includes("leak")) {
+            let type = "Other Leak";
+            if (detail.includes("water")) type = "Water Leak";
+            else if (detail.includes("oil")) type = "Oil Leak";
+            else if (detail.includes("air")) type = "Air Leak";
+            else if (detail.includes("ash")) type = "Ash Leak";
+            else if (detail.includes("steam")) type = "Steam Leak";
+            else if (detail.includes("dust")) type = "Coal Dust Leak";
+            else if (detail.includes("sea")) type = "Sea Water Leak";
+            else if (detail.includes("lime")) type = "Limestone Leak";
+            groupedProblems[system][type] =
+              (groupedProblems[system][type] || 0) + 1;
+          }
+        }
+
+        Object.values(latestStatusPerEquip).forEach(({ status }) => {
+          if (status === 0) op++;
+          else if (status === 1) sus++;
+          else if (status === 2) brk++;
+        });
+
+        systems = Object.keys(groupedProblems);
+        currentSystemIndex = 0;
+
+        drawStatusChart(); // this already updates the summary counts properly now
+
+        drawStatusChart(op, sus, brk);
+        drawBarChart(systems[currentSystemIndex]);
+        drawEquipmentTable(data, colIndexes);
+      }
+
+      function drawStatusChart() {
+        const container = document.getElementById("statusChart");
+        container.innerHTML = ""; // Clear old charts
+
+        const statusCol = fullData.getColumnIndex("Current Status");
+        const equipCol = fullData.getColumnIndex("Equipment");
+        const timeCol = fullData.getColumnIndex("Timestamp");
+        const systemCol = fullData.getColumnIndex("System");
+
+        const latestStatusPerEquip = {};
+        let totalOp = 0,
+          totalSus = 0,
+          totalBrk = 0;
+
+        // Special case: show only one combined pie chart
+        if (currentTab === "equipments" || !currentTabSystems) {
+          for (let i = 0; i < fullData.getNumberOfRows(); i++) {
+            const equipment = fullData.getValue(i, equipCol);
+            const timestamp = new Date(fullData.getValue(i, timeCol));
+            const status = fullData.getValue(i, statusCol);
+
+            if (
+              !latestStatusPerEquip[equipment] ||
+              new Date(latestStatusPerEquip[equipment].timestamp) < timestamp
+            ) {
+              latestStatusPerEquip[equipment] = { status, timestamp };
+            }
+          }
+
+          Object.values(latestStatusPerEquip).forEach(({ status }) => {
+            if (status === 0) totalOp++;
+            else if (status === 1) totalSus++;
+            else if (status === 2) totalBrk++;
+          });
+
+          const chartContainer = document.createElement("div");
+          chartContainer.style.height = "300px";
+          chartContainer.style.maxWidth = "500px";
+          chartContainer.style.margin = "auto";
+          chartContainer.id = "statusChart_combined";
+          container.appendChild(chartContainer);
+
+          const chartData = google.visualization.arrayToDataTable([
+            ["Status", "Count"],
+            ["Operational", totalOp],
+            ["Sustainable", totalSus],
+            ["Breakdown", totalBrk],
+          ]);
+
+          const options = {
+            pieHole: 0.4,
+            colors: ["#28a745", "#ffc107", "#dc3545"],
+            legend: { position: "right" },
+            chartArea: { width: "90%", height: "90%" },
+          };
+
+          const chart = new google.visualization.PieChart(chartContainer);
+          chart.draw(chartData, options);
+
+          // ✅ Update summary counts
+          document.getElementById("opCount").textContent = `🟢 ${totalOp}`;
+          document.getElementById("susCount").textContent = `🟡 ${totalSus}`;
+          document.getElementById("brkCount").textContent = `🔴 ${totalBrk}`;
           return;
         }
-        handleData(response);
-      });
-    }
 
-    function handleData(response) {
-      const data = response.getDataTable();
-      let op = 0,
-        sus = 0,
-        brk = 0;
-      const statusCol = data.getColumnIndex("Current Status");
-      const detailCol = data.getColumnIndex("Detailed Description");
-      const systemCol = data.getColumnIndex("System");
+        // Else: draw multiple charts per system
+        const systemsToRender = currentTabSystems;
 
-      // 📌 Columns for Equipment Table
-      const colIndexes = {
-        timestamp: data.getColumnIndex("Timestamp"),
-        woNum: data.getColumnIndex("Work Order Num"),
-        equipment: data.getColumnIndex("Equipment"),
-        subComponent: data.getColumnIndex("Sub-Component"),
-        briefDesc: data.getColumnIndex("Brief Description of Problem or Work"),
-        detailedDesc: data.getColumnIndex("Detailed Description"),
-        severity: data.getColumnIndex("Severity"),
-        planningRemarks: data.getColumnIndex("*Planning Remarks"),
-        wrStatus: data.getColumnIndex("WR Status"),
-        picture: data.getColumnIndex("Pictures"),
-      };
+        systemsToRender.forEach((systemName, idx) => {
+          const systemStatusMap = {};
+          for (let i = 0; i < fullData.getNumberOfRows(); i++) {
+            const system = fullData.getValue(i, systemCol);
+            if (system !== systemName) continue;
 
-      groupedProblems = {};
+            const equipment = fullData.getValue(i, equipCol);
+            const timestamp = new Date(fullData.getValue(i, timeCol));
+            const status = fullData.getValue(i, statusCol);
 
-      for (let i = 0; i < data.getNumberOfRows(); i++) {
-        const status = data.getValue(i, statusCol);
-        const detail = (data.getValue(i, detailCol) || "").toLowerCase();
-        const system = data.getValue(i, systemCol) || "Uncategorized";
+            if (
+              !systemStatusMap[equipment] ||
+              new Date(systemStatusMap[equipment].timestamp) < timestamp
+            ) {
+              systemStatusMap[equipment] = { status, timestamp };
+            }
+          }
 
-        if (status === 0) op++;
-        else if (status === 1) sus++;
-        else if (status === 2) brk++;
+          let op = 0,
+            sus = 0,
+            brk = 0;
+          Object.values(systemStatusMap).forEach(({ status }) => {
+            if (status === 0) op++;
+            else if (status === 1) sus++;
+            else if (status === 2) brk++;
+          });
 
-        if (!groupedProblems[system]) groupedProblems[system] = {};
+          totalOp += op;
+          totalSus += sus;
+          totalBrk += brk;
 
-        if (
-          detail.includes("no reading") ||
-          detail.includes("no signal") ||
-          detail.includes("no input")
-        ) {
-          let type = "No Reading";
-          groupedProblems[system][type] =
-            (groupedProblems[system][type] || 0) + 1;
-        } else if (
-          detail.includes("unusual sound") ||
-          detail.includes("abnormal noise") ||
-          detail.includes("strange sound")
-        ) {
-          let type = "Unusual Sound";
-          groupedProblems[system][type] =
-            (groupedProblems[system][type] || 0) + 1;
-        } else if (detail.includes("leak")) {
-          let type = "Other Leak";
-          if (detail.includes("water")) type = "Water Leak";
-          else if (detail.includes("oil")) type = "Oil Leak";
-          else if (detail.includes("air")) type = "Air Leak";
-          else if (detail.includes("ash")) type = "Ash Leak";
-          else if (detail.includes("steam")) type = "Steam Leak";
-          else if (detail.includes("dust")) type = "Coal Dust Leak";
-          else if (detail.includes("sea")) type = "Sea Water Leak";
-          else if (detail.includes("lime")) type = "Limestone Leak";
+          const chartDiv = document.createElement("div");
+          chartDiv.style.width = "calc(50% - 40px)";
+          chartDiv.style.maxWidth = "400px";
+          chartDiv.style.flex = "1 1 300px";
+          chartDiv.style.boxSizing = "border-box";
+          chartDiv.style.display = "flex";
+          chartDiv.style.flexDirection = "column";
+          chartDiv.style.alignItems = "center";
+          chartDiv.style.margin = "10px";
 
-          groupedProblems[system][type] =
-            (groupedProblems[system][type] || 0) + 1;
+          const chartTitle = document.createElement("h4");
+          chartTitle.style.textAlign = "center";
+          chartTitle.innerText = systemName;
+          chartDiv.appendChild(chartTitle);
+
+          const chartContainer = document.createElement("div");
+          chartContainer.id = `statusChart_${idx}`;
+          chartContainer.style.height = "250px";
+          chartDiv.appendChild(chartContainer);
+
+          container.appendChild(chartDiv);
+
+          const chartData = google.visualization.arrayToDataTable([
+            ["Status", "Count"],
+            ["Operational", op],
+            ["Sustainable", sus],
+            ["Breakdown", brk],
+          ]);
+
+          const options = {
+            pieHole: 0.4,
+            colors: ["#28a745", "#ffc107", "#dc3545"],
+            legend: { position: "none" },
+            chartArea: { width: "100%", height: "100%" },
+          };
+
+          const chart = new google.visualization.PieChart(chartContainer);
+          chart.draw(chartData, options);
+        });
+
+        // ✅ Update summary counts
+        document.getElementById("opCount").textContent = `🟢 ${totalOp}`;
+        document.getElementById("susCount").textContent = `🟡 ${totalSus}`;
+        document.getElementById("brkCount").textContent = `🔴 ${totalBrk}`;
+      }
+
+      function nextSystem() {
+        if (systems.length === 0) return;
+        currentSystemIndex = (currentSystemIndex + 1) % systems.length;
+        drawBarChart(systems[currentSystemIndex]);
+      }
+
+      function prevSystem() {
+        if (systems.length === 0) return;
+        currentSystemIndex =
+          (currentSystemIndex - 1 + systems.length) % systems.length;
+        drawBarChart(systems[currentSystemIndex]);
+      }
+
+      function drawEquipmentTable(data, colIndexes) {
+        const systemSet = new Set();
+        const equipmentSet = new Set();
+
+        for (let i = 0; i < data.getNumberOfRows(); i++) {
+          const system = data.getValue(i, colIndexes.system);
+          const equipment = data.getValue(i, colIndexes.equipment);
+          if (system) systemSet.add(system);
+          if (equipment) equipmentSet.add(equipment);
+        }
+
+        document.getElementById("systemFilter").innerHTML =
+          `<option value="">All</option>` +
+          [...systemSet]
+            .sort()
+            .map((s) => `<option value="${s}">${s}</option>`)
+            .join("");
+
+        document.getElementById("equipmentFilter").innerHTML =
+          `<option value="">All</option>` +
+          [...equipmentSet]
+            .sort()
+            .map((e) => `<option value="${e}">${e}</option>`)
+            .join("");
+
+        applyTableFilters();
+      }
+
+      function setWrStatusFilter(status) {
+        currentWrStatus = status;
+
+        // Highlight active button
+        document.querySelectorAll(".wr-btn").forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.status === status);
+        });
+
+        applyTableFilters();
+      }
+
+      function applyTableFilters() {
+        const tbody = document.querySelector("#equipmentTable tbody");
+        const systemFilterEl = document.getElementById("systemFilter");
+        const equipmentFilterEl = document.getElementById("equipmentFilter");
+        const wrStatusFilter = currentWrStatus;
+
+        const tabSystems = window.currentTabSystems || null;
+
+        // 🔁 Save selected filter values
+        const selectedSystem = systemFilterEl.value;
+        const selectedEquipment = equipmentFilterEl.value;
+
+        const rows = [];
+        const systemSet = new Set();
+        const equipmentSet = new Set();
+
+        for (let i = 0; i < fullData.getNumberOfRows(); i++) {
+          const system = fullData.getValue(i, colIndexes.system);
+          const equipment = fullData.getValue(i, colIndexes.equipment);
+          const wrStatus = fullData.getValue(i, colIndexes.wrStatus) || "";
+          const timestamp = fullData.getValue(i, colIndexes.timestamp);
+
+          const inTab =
+            !tabSystems ||
+            tabSystems.length === 0 ||
+            tabSystems.includes(system);
+
+          if (!inTab) continue;
+
+          systemSet.add(system);
+          equipmentSet.add(equipment);
+
+          const matches =
+            (!selectedSystem || selectedSystem === system) &&
+            (!selectedEquipment || selectedEquipment === equipment) &&
+            (!wrStatusFilter ||
+              wrStatus.toLowerCase().includes(wrStatusFilter.toLowerCase()));
+
+          if (matches) {
+            rows.push({ index: i, timestamp });
+          }
+        }
+
+        // 🔁 Rebuild system dropdown and restore selection
+        systemFilterEl.innerHTML =
+          `<option value="">All Systems</option>` +
+          [...systemSet]
+            .sort()
+            .map(
+              (s) =>
+                `<option value="${s}" ${
+                  s === selectedSystem ? "selected" : ""
+                }>${s}</option>`
+            )
+            .join("");
+
+        // 🔁 Rebuild equipment dropdown and restore selection
+        equipmentFilterEl.innerHTML =
+          `<option value="">All Equipment</option>` +
+          [...equipmentSet]
+            .sort()
+            .map(
+              (e) =>
+                `<option value="${e}" ${
+                  e === selectedEquipment ? "selected" : ""
+                }>${e}</option>`
+            )
+            .join("");
+
+        // 🔃 Sort and render table
+        rows.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        tbody.innerHTML = "";
+
+        for (const row of rows) {
+          const i = row.index;
+          const tr = `
+      <tr>
+        <td>${formatDate(fullData.getValue(i, colIndexes.timestamp))}</td>
+        <td>${fullData.getValue(i, colIndexes.woNum) || ""}</td>
+        <td>${fullData.getValue(i, colIndexes.equipment) || ""}</td>
+        <td>${fullData.getValue(i, colIndexes.subComponent) || ""}</td>
+        <td>${fullData.getValue(i, colIndexes.briefDesc) || ""}</td>
+        <td>${fullData.getValue(i, colIndexes.detailedDesc) || ""}</td>
+        <td>${fullData.getValue(i, colIndexes.severity) || ""}</td>
+        <td>${fullData.getValue(i, colIndexes.planningRemarks) || ""}</td>
+        <td>${fullData.getValue(i, colIndexes.wrStatus) || ""}</td>
+        <td>${formatImageLink(fullData.getValue(i, colIndexes.images))}</td>
+      </tr>
+    `;
+          tbody.innerHTML += tr;
         }
       }
 
-      systems = Object.keys(groupedProblems);
-      currentSystemIndex = 0;
-
-      document.getElementById("opCount").textContent = op;
-      document.getElementById("susCount").textContent = sus;
-      document.getElementById("brkCount").textContent = brk;
-
-      drawStatusChart(op, sus, brk);
-      drawBarChart(systems[currentSystemIndex]);
-      drawEquipmentTable(data, colIndexes);
-    }
-
-    function formatDate(value) {
-      if (!value) return "";
-      const date = new Date(value);
-      if (isNaN(date)) return value;
-
-      const options = { year: "numeric", month: "long", day: "numeric" };
-      return date.toLocaleDateString("en-US", options);
-    }
-
-    function drawStatusChart(op, sus, brk) {
-      const chartData = google.visualization.arrayToDataTable([
-        ["Status", "Count"],
-        ["Operational", op],
-        ["Sustainable", sus],
-        ["Breakdown", brk],
-      ]);
-      const options = {
-        pieHole: 0.4,
-        colors: ["#28a745", "#ffc107", "#dc3545"],
-        legend: { position: "bottom" },
-      };
-      const chart = new google.visualization.PieChart(
-        document.getElementById("statusChart")
-      );
-      chart.draw(chartData, options);
-    }
-
-    function drawBarChart(system) {
-      document.getElementById("systemTitle").textContent = system;
-      const problems = groupedProblems[system];
-      const rows = Object.entries(problems).map(([type, count]) => [
-        type,
-        count,
-      ]);
-
-      const chartData = google.visualization.arrayToDataTable([
-        ["Problem Type", "Count"],
-        ...rows,
-      ]);
-
-      const options = {
-        legend: { position: "none" },
-        colors: ["#007bff"],
-        hAxis: { title: "Problem Type" },
-        vAxis: {
-          title: "Count",
-          format: "0", // <- Ensures integers only
-          gridlines: { count: -1 }, // <- Automatically adjusts steps
-        },
-      };
-
-      const chart = new google.visualization.ColumnChart(
-        document.getElementById("barChart")
-      );
-      chart.draw(chartData, options);
-    }
-
-    function nextSystem() {
-      if (systems.length === 0) return;
-      currentSystemIndex = (currentSystemIndex + 1) % systems.length;
-      drawBarChart(systems[currentSystemIndex]);
-    }
-
-    function prevSystem() {
-      if (systems.length === 0) return;
-      currentSystemIndex =
-        (currentSystemIndex - 1 + systems.length) % systems.length;
-      drawBarChart(systems[currentSystemIndex]);
-    }
-
-    // ✅ Equipment Table Rendering
-    function drawEquipmentTable(data, colIndexes) {
-      const tbody = document.querySelector("#equipmentTable tbody");
-      tbody.innerHTML = "";
-
-      // Extract rows and sort by date
-      const rows = [];
-      for (let i = 0; i < data.getNumberOfRows(); i++) {
-        const timestamp = data.getValue(i, colIndexes.timestamp);
-        rows.push({ index: i, timestamp });
+      function formatDate(value) {
+        if (!value) return "";
+        const date = new Date(value);
+        return isNaN(date)
+          ? value
+          : date.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            });
       }
 
-      rows.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // newest first
-
-      for (const row of rows) {
-        const i = row.index;
-        const tr = `
-      <tr>
-        <td>${formatDate(data.getValue(i, colIndexes.timestamp))}</td>
-        <td>${data.getValue(i, colIndexes.woNum) || ""}</td>
-        <td>${data.getValue(i, colIndexes.equipment) || ""}</td>
-        <td>${data.getValue(i, colIndexes.subComponent) || ""}</td>
-        <td>${data.getValue(i, colIndexes.briefDesc) || ""}</td>
-        <td>${data.getValue(i, colIndexes.detailedDesc) || ""}</td>
-        <td>${data.getValue(i, colIndexes.severity) || ""}</td>
-        <td>${data.getValue(i, colIndexes.planningRemarks) || ""}</td>
-        <td>${data.getValue(i, colIndexes.wrStatus) || ""}</td>
-        <td>${data.getValue(i, colIndexes.picture) || ""}</td>
-      </tr>
-    `;
-        tbody.innerHTML += tr;
+      function formatImageLink(url) {
+        if (!url) return "";
+        const safeURL = url.replace(/"/g, "&quot;");
+        return `<a style="color:blue;" href="${safeURL}" target="_blank" rel="noopener noreferrer">View</a>`;
       }
-    }
-  </script>
+
+      function openModal(src) {
+        const modal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("modalImage");
+
+        if (modalImg && src) {
+          modalImg.src = src;
+          modal.style.display = "block";
+        }
+      }
+    </script>
+  </body>
 </html>

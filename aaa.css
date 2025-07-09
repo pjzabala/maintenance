@@ -1,0 +1,31 @@
+.page-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 16px 0 8px;
+  text-align: center;
+  color: #333;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.tab-button {
+  padding: 8px 16px;
+  background-color: #e3e3e3;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.tab-button.active,
+.tab-button:hover {
+  background-color: #1976d2;
+  color: white;
+}

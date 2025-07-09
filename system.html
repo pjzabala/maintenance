@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>System Status Diagram</title>
+    <link rel="stylesheet" href="system.css" />
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  </head>
+
+  <body>
+    <!-- Page Title -->
+    <div class="page-title">NARRA THERMAL 1 EQUIPMENT STATUS</div>
+
+    <!-- Tabs Container -->
+    <div class="tabs" id="tabs-container"></div>
+
+    <!-- Diagram or Equipment Table will go here -->
+    <div class="diagram-container" id="diagram"></div>
+
+    <!-- Equipment List Modal -->
+    <div id="equipment-modal" class="modal hidden">
+      <div class="modal-content">
+        <span id="equipment-modal-close" class="close">&times;</span>
+        <div class="filter-container">
+          <h2>EQUIPMENT LIST</h2>
+          <label><select id="system-filter"></select></label>
+          <label><select id="equipment-filter"></select></label>
+          <div class="status-toggle-buttons">
+            <button id="pending-btn" class="filter-btn">Pending</button>
+            <button id="done-btn" class="filter-btn">Done</button>
+          </div>
+        </div>
+        <div class="table-container">
+          <table class="equipment-table">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Work Order Num</th>
+                <th>Equipment</th>
+                <th>Sub-Component</th>
+                <th>Brief Description</th>
+                <th>Detailed Description</th>
+                <th>Severity</th>
+                <th>Planning Remarks</th>
+                <th>WR Status</th>
+                <th>Image</th>
+              </tr>
+            </thead>
+            <tbody id="equipment-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Diagram Equipment Modal -->
+    <div id="diagram-modal" class="modal hidden">
+      <div class="modal-content">
+        <span id="diagram-modal-close" class="close">&times;</span>
+        <div class="status-toggle-buttons">
+          <h2 id="diagram-modal-title"></h2>
+          <button id="diagram-pending-btn" class="filter-btn">Pending</button>
+          <button id="diagram-done-btn" class="filter-btn">Done</button>
+        </div>
+        <div class="table-container">
+          <table class="status-table">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Work Order No.</th>
+                <th>Equipment</th>
+                <th>Sub-Component</th>
+                <th>Brief Description</th>
+                <th>Detailed Description</th>
+                <th>Severity</th>
+                <th>Planning Remarks</th>
+                <th>WR Status</th>
+                <th>Images</th>
+              </tr>
+            </thead>
+            <tbody id="diagram-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="image-modal" class="modal hidden">
+      <div class="modal-content image-modal-content">
+        <span id="image-modal-close" class="close">&times;</span>
+        <img id="image-modal-img" src="" alt="Image Preview" />
+      </div>
+    </div>
+
+    <script src="javascript/config.js"></script>
+    <script src="javascript/utils.js"></script>
+    <script src="javascript/diagram.js"></script>
+    <script src="javascript/main.js"></script>
+    <!-- Tab Button Script + Main App Script -->
+    <!-- Optional: Initialize tabs only once -->
+    <script>
+      const tabs = [
+        ["equipments", "Equipment List"],
+        ["bottom-ash", "Bottom Ash System"],
+        ["combustion", "Combustion System"],
+        ["wts", "Water Treatment"],
+        ["sws", "Steam and Water"],
+        ["sccws", "Seawater & CCW"],
+        ["cbhs", "Coal & Biomass Handling"],
+        ["cas", "Compressed Air"],
+        ["fps", "Fire Protection"],
+        ["tls", "Turbine Lubrication"],
+        ["cs", "Chlorination System"],
+        ["electrical", "MV & LV Electrical"],
+        ["substation", "Substation"],
+        ["heavy-equipment", "Heavy Equipment"],
+        ["switchyard", "Switchyard"],
+      ];
+
+      window.addEventListener("DOMContentLoaded", () => {
+        const container = document.getElementById("tabs-container");
+        container.innerHTML = tabs
+          .map(
+            ([id, label], i) =>
+              `<button class="tab-button${
+                i === 0 ? " active" : ""
+              }" onclick="showTab(event, '${id}')">${label}</button>`
+          )
+          .join("");
+      });
+    </script>
+  </body>
+</html>
