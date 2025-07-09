@@ -92,7 +92,7 @@ function renderGroupedChart(groupedData) {
   "Biomass Handling System",
   "Feedwater System",
   "Circulating Water System",
-  "Close Circulating Cooling Water System"
+  "Closed Circulating Cooling Water System"
 ];
 
 
@@ -326,18 +326,7 @@ function renderYearlyTrendChart(filteredData) {
   });
 }
 
-function populateFilters(filteredData) {
-  const selectedValues = {
-    system: getSelectedValues("filter-system"),
-    equipment: getSelectedValues("filter-equipment"),
-    maintenance: getSelectedValues("filter-maintenance"),
-    problem: getSelectedValues("filter-problem"),
-    section: getSelectedValues("filter-section"),
-    year: getSelectedValues("filter-year"),
-    quarter: getSelectedValues("filter-quarter"),
-  };
-
-  // Use FULL data for filter options
+function populateFilters(data, selectedFilters) {
   const systems = new Set();
   const equipments = new Set();
   const maintenances = new Set();
@@ -345,7 +334,7 @@ function populateFilters(filteredData) {
   const section = new Set();
   const years = new Set();
 
-  originalData.forEach((row) => {
+  data.forEach((row) => {
     if (row["SYSTEM"]) systems.add(row["SYSTEM"]);
     if (row["EQUIPMENT ID NO."]) equipments.add(row["EQUIPMENT ID NO."]);
     if (row["TYPE OF MAINTENANCE"]) maintenances.add(row["TYPE OF MAINTENANCE"]);
@@ -356,47 +345,46 @@ function populateFilters(filteredData) {
     if (!isNaN(date)) years.add(date.getFullYear().toString());
   });
 
-  // Refill all dropdowns (keep current selection)
-  fillSelect("filter-system", Array.from(systems), selectedValues.system);
-  fillSelect("filter-equipment", Array.from(equipments), selectedValues.equipment);
-  fillSelect("filter-maintenance", Array.from(maintenances), selectedValues.maintenance);
-  fillSelect("filter-problem", Array.from(problems), selectedValues.problem);
-  fillSelect("filter-section", Array.from(section), selectedValues.section);
-  fillSelect("filter-year", Array.from(years), selectedValues.year);
-  fillSelect("filter-quarter", ["Q1", "Q2", "Q3", "Q4"], selectedValues.quarter);
+  fillSelect("filter-system", Array.from(systems), selectedFilters.system);
+  fillSelect("filter-equipment", Array.from(equipments), selectedFilters.equipment);
+  fillSelect("filter-maintenance", Array.from(maintenances), selectedFilters.maintenance);
+  fillSelect("filter-problem", Array.from(problems), selectedFilters.problem);
+  fillSelect("filter-section", Array.from(section), selectedFilters.section);
+  fillSelect("filter-year", Array.from(years), selectedFilters.year);
+  fillSelect("filter-quarter", ["Q1", "Q2", "Q3", "Q4"], selectedFilters.quarter);
+
 }
 
 
 
 
-function fillSelect(id, values, preSelected = []) {
+
+
+function fillSelect(id, values, selected = []) {
   const container = document.getElementById(id);
   container.innerHTML = "";
 
-  // Search box
   const searchDiv = document.createElement("div");
   searchDiv.innerHTML = `<input type="text" placeholder="Search..." class="dropdown-search" />`;
   container.appendChild(searchDiv);
 
-  // "All" checkbox
   const allDiv = document.createElement("div");
+  const allChecked = selected.length === 0;
   allDiv.innerHTML = `
-    <label><input type="checkbox" value="__ALL__" ${preSelected.length === 0 ? "checked" : ""}> All</label>
+    <label><input type="checkbox" value="__ALL__" ${allChecked ? "checked" : ""}> All</label>
   `;
   container.appendChild(allDiv);
 
-  // Options
   values.sort().forEach((value) => {
+    const isChecked = selected.includes(value);
     const div = document.createElement("div");
     div.classList.add("dropdown-item");
-    const isChecked = preSelected.includes(value) ? "checked" : "";
     div.innerHTML = `
-      <label><input type="checkbox" value="${value}" ${isChecked}> ${value}</label>
+      <label><input type="checkbox" value="${value}" ${isChecked ? "checked" : ""}> ${value}</label>
     `;
     container.appendChild(div);
   });
 
-  // Change listeners
   container.querySelectorAll("input[type='checkbox']").forEach((checkbox) => {
     checkbox.addEventListener("change", () => {
       const allCheckbox = container.querySelector('input[value="__ALL__"]');
@@ -410,7 +398,6 @@ function fillSelect(id, values, preSelected = []) {
     });
   });
 
-  // Search functionality
   const searchInput = container.querySelector(".dropdown-search");
   searchInput.addEventListener("input", () => {
     const filter = searchInput.value.toLowerCase();
@@ -420,9 +407,6 @@ function fillSelect(id, values, preSelected = []) {
     });
   });
 }
-
-
-
 
 function getSelectedValues(containerId) {
   const container = document.getElementById(containerId);
@@ -477,12 +461,26 @@ if (selectedQuarters.length > 0) {
 
 
 function updateChart() {
+  const selectedFilters = {
+    system: getSelectedValues("filter-system"),
+    equipment: getSelectedValues("filter-equipment"),
+    maintenance: getSelectedValues("filter-maintenance"),
+    problem: getSelectedValues("filter-problem"),
+    section: getSelectedValues("filter-section"),
+    year: getSelectedValues("filter-year"),
+    quarter: getSelectedValues("filter-quarter"), 
+  };
+
   const filtered = applyFilters(originalData);
-  populateFilters(filtered);
+
+  populateFilters(originalData, selectedFilters); // Use originalData, not filtered
   const grouped = groupBySystemAndMaintenance(filtered);
   renderGroupedChart(grouped);
   renderYearlyTrendChart(filtered);
 }
+
+
+
 
 function clearAllFilters() {
   document.querySelectorAll(".dropdown input[type='checkbox']").forEach((checkbox) => {
@@ -498,7 +496,14 @@ function clearAllFilters() {
 
 loadCSVData().then((data) => {
   originalData = data;
-  populateFilters(data);
+  populateFilters(data, {
+  system: [],
+  equipment: [],
+  maintenance: [],
+  problem: [],
+  section: [],
+  year: [],
+});
   updateChart();
 
   document.getElementById("clear-filters").addEventListener("click", clearAllFilters);
