@@ -336,8 +336,8 @@ if (!isNaN(date)) years.add(date.getFullYear().toString()); // ✅ convert to st
   fillSelect("filter-problem", Array.from(problems));
   fillSelect("filter-section", Array.from(section));
   fillSelect("filter-year", Array.from(years));
+  fillSelect("filter-quarter", ["Q1", "Q2", "Q3", "Q4"]);
 
-  fillSelect("filter-quarter", ["Q1", "Q2"]);
 }
 
 function fillSelect(id, values) {
@@ -438,20 +438,20 @@ function applyFilters(data) {
     const matchEnd = !endDate || rowDate <= new Date(endDate);
 
     let matchQuarter = true;
-    if (selectedQuarters.length > 0) {
-      matchQuarter = selectedQuarters.some((q) => {
-        if (q === "Q1") {
-          const start = new Date(rowDate.getFullYear(), 0, 1);
-          const end = new Date(rowDate.getFullYear(), 2, 31);
-          return rowDate >= start && rowDate <= end;
-        } else if (q === "Q2") {
-          const start = new Date(rowDate.getFullYear(), 3, 1);
-          const end = new Date(rowDate.getFullYear(), 5, 30);
-          return rowDate >= start && rowDate <= end;
-        }
-        return false;
-      });
-    }
+if (selectedQuarters.length > 0) {
+  matchQuarter = selectedQuarters.some((q) => {
+    const year = rowDate.getFullYear();
+    const ranges = {
+      Q1: [new Date(year, 0, 1), new Date(year, 2, 31)],    // Jan 1 – Mar 31
+      Q2: [new Date(year, 3, 1), new Date(year, 5, 30)],    // Apr 1 – Jun 30
+      Q3: [new Date(year, 6, 1), new Date(year, 8, 30)],    // Jul 1 – Sep 30
+      Q4: [new Date(year, 9, 1), new Date(year, 11, 31)]    // Oct 1 – Dec 31
+    };
+    const [start, end] = ranges[q] || [];
+    return rowDate >= start && rowDate <= end;
+  });
+}
+
 
     return matchSystem && matchEquipment && matchMaintenance && matchProblem && matchStart && matchEnd && matchQuarter && matchSection &&  matchYear;
   });
