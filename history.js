@@ -67,32 +67,51 @@ function groupBySystemAndMaintenance(data) {
 }
 
 function renderGroupedChart(groupedData) {
-  const priorityOrder = [
-    "Slag Removal System",
-    "Fly Ash Handling System",
-    "Limestone Handling System",
-    "Combustion System",
-    "Water Treatment System",
-    "Coal Handling System",
-    "Biomass Handling System",
-    "Feedwater System",
-    "Circulating Water System",
-    "Close Circulating Cooling Water System"
-  ];
+  const selectedSystems = getSelectedValues("filter-system");
 
-  const sortable = Object.entries(groupedData).map(([system, counts]) => {
-    const total = counts.Preventive + counts.Corrective + counts.Modification;
-    return { system, ...counts, total };
+  const allData = Object.entries(groupedData)
+    .filter(([system]) => {
+      return selectedSystems.length === 0 || selectedSystems.includes(system);
+    })
+    .map(([system, counts]) => ({
+      system,
+      ...counts,
+      total: counts.Preventive + counts.Corrective + counts.Modification,
+    }));
+
+  // Separate priority systems and others
+  const priority = [];
+  const others = [];
+  const prioritySystems = [
+  "Slag Removal System",
+  "Fly Ash Handling System",
+  "Limestone Handling System",
+  "Combustion System",
+  "Water Treatment System",
+  "Coal Handling System",
+  "Biomass Handling System",
+  "Feedwater System",
+  "Circulating Water System",
+  "Close Circulating Cooling Water System"
+];
+
+
+  allData.forEach((item) => {
+    if (prioritySystems.includes(item.system)) {
+      priority.push(item);
+    } else {
+      others.push(item);
+    }
   });
 
-  // Filter and sort priority systems by Preventive count
-  const priorityItems = priorityOrder
-    .map(name => sortable.find(item => item.system === name))
-    .filter(Boolean)
-    .sort((a, b) => b.Preventive - a.Preventive); // 🔼 sort by Preventive
+  // Sort priority by Preventive descending
+  priority.sort((a, b) => b.Preventive - a.Preventive);
 
-  // Fill up to 10 items
-  const combined = priorityItems.slice(0, 10);
+  // Sort others by Preventive descending
+  others.sort((a, b) => b.Preventive - a.Preventive);
+
+  // Combine and limit to top 10
+  const combined = [...priority, ...others].slice(0, 10);
 
   const systems = combined.map((item) => item.system);
   const preventiveData = combined.map((item) => item.Preventive);
@@ -349,9 +368,11 @@ function fillSelect(id, values) {
   const labelPrefix = toggleBtn.textContent.trim().split(":")[0]; // e.g., "Quarter"
 
   // Add search box
-  const searchDiv = document.createElement("div");
-  searchDiv.innerHTML = `<input type="text" placeholder="Search..." class="dropdown-search" />`;
-  container.appendChild(searchDiv);
+const searchDiv = document.createElement("div");
+searchDiv.className = "dropdown-search-wrapper";
+searchDiv.innerHTML = `<input type="text" placeholder="Search..." class="dropdown-search" />`;
+container.appendChild(searchDiv);
+
 
   // Add "All" checkbox
   const allDiv = document.createElement("div");

@@ -74,10 +74,18 @@ h1 {
   cursor: pointer;
   background-color: white;
 }
+.dropdown-search-wrapper {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 5;
+  padding: 5px;
+  border-bottom: 1px solid #eee;
+}
+
 .dropdown-search {
-  width: 80%;
+  width: 100%;
   padding: 6px 10px;
-  margin-bottom: 8px;
   border: 1px solid #ccc;
   border-radius: 8px;
   font-family: monospace;
