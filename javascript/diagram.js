@@ -55,18 +55,27 @@ function updateDiagram() {
 
   container.classList.remove("no-diagram");
 
-  const imagePath = `systems/${selectedSystemTab}`;
+  diagram.innerHTML = ""; // Clear early
+
+const imagePath = `systems/${selectedSystemTab}`;
 const img = new Image();
+
 img.onload = () => {
   container.style.backgroundImage = `url("${img.src}")`;
+
+  // ✅ Once image is ready, then render status indicators
+  renderStatusIndicators();
 };
+
 img.onerror = () => {
-  container.style.backgroundImage = `url("${imagePath}.png")`;
+  img.src = `${imagePath}.png`;
 };
-img.src = `${imagePath}.jpg`; // Load JPG first
 
+img.src = `${imagePath}.jpg`;
 
-  diagram.innerHTML = `<div class="equipment-list-button" onclick="currentDiagramEquipment=''; diagramWRStatus=''; showSystemEquipmentList('${selectedSystemTab}')">EQUIPMENT LIST</div>`;
+// Just sets button early
+diagram.innerHTML = `<div class="equipment-list-button" onclick="currentDiagramEquipment=''; diagramWRStatus=''; showSystemEquipmentList('${selectedSystemTab}')">EQUIPMENT LIST</div>`;
+
 
 
 
