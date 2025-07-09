@@ -5,10 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>System Status Diagram</title>
     <link rel="stylesheet" href="system.css" />
+    <link rel="stylesheet" href="header.css" />
+    <link rel="stylesheet" href="footer.css" />
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   </head>
 
   <body>
+    <!-- NAVBAR -->
+    <header>
+      <div class="navbar" id="navbar">
+        <div class="nav-left">
+          <!-- Hamburger Menu Icon -->
+          <div class="hamburger" id="hamburger">
+            &#9776;
+            <!-- Unicode hamburger icon -->
+          </div>
+          <a href="index.html">
+            <img
+              src="https://www.dmciholdings.com/storage/app/media/2023/Investment/New/fdmci-powertransparentnew0331.png"
+              alt="logo"
+            />
+          </a>
+          <span>PALAWAN MAINTENANCE</span>
+        </div>
+
+        <!-- Navbar Items -->
+        <div class="nav-right">
+          <div class="nav-item">
+            <a href="index.html" class="nav-item">Home</a>
+          </div>
+
+          <div class="nav-item dropdown-wrapper">
+            <a class="nav-item" href="#">NARRA THERMAL 1 ▼</a>
+            <div class="dropdown">
+              <p>
+                <a class="nav-item" href="equipment-status.html"
+                  >Equipment Status</a
+                >
+              </p>
+              <p><a class="nav-item" href="#=">Maintenance Schedule</a></p>
+              <p><a class="nav-item" href="history.html">History Records</a></p>
+              <p>
+                <a class="nav-item" href="techinfo.html"
+                  >Technical Information</a
+                >
+              </p>
+              <p><a class="nav-item" href="#">DPTPP PMS 2025</a></p>
+            </div>
+          </div>
+
+          <div class="nav-item">
+            <a class="nav-item" href="aborlan-bunker1.html">ABORLAN BUNKER 1</a>
+          </div>
+          <div class="nav-item">
+            <a class="nav-item" href="hs-diesel.html">HS DIESEL PP</a>
+          </div>
+        </div>
+      </div>
+    </header>
+    <script src="header.js"></script>
     <!-- Page Title -->
     <div class="page-title">NARRA THERMAL 1 EQUIPMENT STATUS</div>
 
@@ -129,5 +184,36 @@
           .join("");
       });
     </script>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-left">
+          <h3>Palawan Maintenance</h3>
+          <p>Narra Thermal 1, Aborlan Bunker 1, HS Diesel PP</p>
+          <p>DMCI Power Corporation – Palawan Operations</p>
+        </div>
+
+        <div class="footer-center">
+          <p><strong>Email:</strong> maintenance@dmcipower.com</p>
+          <p><strong>Phone:</strong> +63 (48) 123-4567</p>
+          <p><strong>Office Hours:</strong> Mon–Fri, 8:00AM–5:00PM</p>
+        </div>
+
+        <div class="footer-right">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="equipment-status.html">Equipment Status</a></li>
+            <li><a href="#">Maintenance Schedule</a></li>
+            <li><a href="#">History Records</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2025 Palawan Maintenance. All rights reserved.</p>
+      </div>
+    </footer>
   </body>
 </html>

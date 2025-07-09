@@ -1,4 +1,5 @@
 /* === Base Styles === */
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -12,31 +13,41 @@ body {
   text-align: center;
   margin: 20px 0 10px;
   color: #222;
+  margin-top: 100px;
 }
 
 /* === Tabs === */
 .tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
   justify-content: center;
-  margin-bottom: 16px;
+  gap: 10px;
+
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .tab-button {
-  padding: 8px 16px;
-  border: none;
-  background-color: #e3e3e3;
+  padding: 10px 16px;
+  font-size: 14px;
+  border: 2px solid #ccc;
+  background-color: white;
   border-radius: 6px;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s;
+  transition: all 0.2s ease;
 }
 
-.tab-button.active,
 .tab-button:hover {
-  background-color: #1976d2;
+  background-color: #e0f7fa;
+  border-color: #00bcd4;
+}
+
+.tab-button.active {
+  background-color: #00cde3;
   color: white;
+  border-color: #00cde3;
 }
 
 /* === Diagram Container === */
@@ -131,7 +142,7 @@ body {
   font-weight: bold;
   border-radius: 6px;
   cursor: pointer;
-  z-index: 1000;
+  z-index: 10;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s ease;
 }
