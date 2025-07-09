@@ -72,7 +72,9 @@ function renderGroupedChart(groupedData) {
     return { system, ...counts, total };
   });
 
-  sortable.sort((a, b) => b.total - a.total);
+  // ✅ Sort by Preventive count (descending)
+sortable.sort((a, b) => b.Preventive - a.Preventive);
+
 
   const topN = 10;
   const limited = sortable.slice(0, topN);
@@ -119,10 +121,18 @@ function renderGroupedChart(groupedData) {
     options: {
       responsive: true,
       plugins: {
-        legend: { position: "top" },
+        legend: {
+          position: "top",
+          labels: {
+            font: { size: 13, family: "monospace" },
+            padding: 10,
+          },
+        },
         title: {
           display: true,
           text: `History Records`,
+          font: { size: 18, family: "Oswald" },
+          padding: { top: 10, bottom: 20 },
         },
         datalabels: {
           color: "#fff",
@@ -233,9 +243,8 @@ function renderYearlyTrendChart(filteredData) {
       layout: { padding: 20 },
       plugins: {
         legend: {
-          position: "bottom",
+          position: "top",
           labels: {
-            usePointStyle: true,
             font: { size: 13, family: "monospace" },
             padding: 10,
           },
@@ -320,40 +329,51 @@ function fillSelect(id, values) {
   const container = document.getElementById(id);
   container.innerHTML = "";
 
-  // Search box
+  const wrapper = container.closest(".custom-dropdown");
+  const toggleBtn = wrapper.querySelector(".dropdown-toggle");
+  const labelPrefix = toggleBtn.textContent.trim().split(":")[0]; // e.g., "Quarter"
+
+  // Add search box
   const searchDiv = document.createElement("div");
-  searchDiv.innerHTML = `
-    <input type="text" placeholder="Search..." class="dropdown-search" />
-  `;
+  searchDiv.innerHTML = `<input type="text" placeholder="Search..." class="dropdown-search" />`;
   container.appendChild(searchDiv);
 
-  // "All" checkbox
+  // Add "All" checkbox
   const allDiv = document.createElement("div");
-  allDiv.innerHTML = `
-    <label><input type="checkbox" value="__ALL__" checked> All</label>
-  `;
+  allDiv.innerHTML = `<label><input type="checkbox" value="__ALL__" checked> All</label>`;
   container.appendChild(allDiv);
 
-  // Option checkboxes
+  // Add options
   values.sort().forEach((value) => {
     const div = document.createElement("div");
     div.classList.add("dropdown-item");
-    div.innerHTML = `
-      <label><input type="checkbox" value="${value}"> ${value}</label>
-    `;
+    div.innerHTML = `<label><input type="checkbox" value="${value}"> ${value}</label>`;
     container.appendChild(div);
   });
 
-  // Add change listener
+  // Change listener for checkboxes
   container.querySelectorAll("input[type='checkbox']").forEach((checkbox) => {
     checkbox.addEventListener("change", () => {
       const allCheckbox = container.querySelector('input[value="__ALL__"]');
       const otherCheckboxes = [...container.querySelectorAll('input:not([value="__ALL__"])')];
+
       if (checkbox.value === "__ALL__") {
         otherCheckboxes.forEach(cb => cb.checked = false);
       } else {
         allCheckbox.checked = false;
       }
+
+      // ⬇️ Update button label
+      const selectedValues = [...container.querySelectorAll('input[type="checkbox"]:checked')]
+        .map(cb => cb.value)
+        .filter(v => v !== "__ALL__");
+
+      if (selectedValues.length === 0) {
+        toggleBtn.textContent = labelPrefix;
+      } else {
+        toggleBtn.textContent = `${labelPrefix}: ${selectedValues.slice(0, 2).join(", ")}${selectedValues.length > 2 ? ", +" : ""}`;
+      }
+
       updateChart();
     });
   });
@@ -370,6 +390,7 @@ function fillSelect(id, values) {
 }
 
 
+
 function getSelectedValues(containerId) {
   const container = document.getElementById(containerId);
   const checked = [...container.querySelectorAll('input:checked')]
@@ -383,6 +404,7 @@ function applyFilters(data) {
   const selectedMaintenance = getSelectedValues("filter-maintenance");
   const selectedProblems = getSelectedValues("filter-problem");
   const selectedSection = getSelectedValues("filter-section");
+  const selectedYears = getSelectedValues("filter-year");
   const selectedQuarters = getSelectedValues("filter-quarter");
 
   const startDate = document.getElementById("filter-date-start").value;
@@ -396,6 +418,7 @@ function applyFilters(data) {
     const matchMaintenance = selectedMaintenance.length === 0 || selectedMaintenance.includes(row["TYPE OF MAINTENANCE"]);
     const matchProblem = selectedProblems.length === 0 || selectedProblems.includes(row["TYPE OF PROBLEM/ACTIVITY"]);
     const matchSection = selectedSection.length === 0 || selectedSection.includes(row["POINT SECTION"]);
+    const matchYear = selectedYears.length === 0 || selectedYears.includes(rowDate.getFullYear().toString());
     const matchStart = !startDate || rowDate >= new Date(startDate);
     const matchEnd = !endDate || rowDate <= new Date(endDate);
 
@@ -415,7 +438,7 @@ function applyFilters(data) {
       });
     }
 
-    return matchSystem && matchEquipment && matchMaintenance && matchProblem && matchStart && matchEnd && matchQuarter && matchSection;
+    return matchSystem && matchEquipment && matchMaintenance && matchProblem && matchStart && matchEnd && matchQuarter && matchSection &&  matchYear;
   });
 }
 
