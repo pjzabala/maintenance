@@ -27,7 +27,7 @@ function renderProblemChart(groupedProblems, topSystem) {
         {
           label: `${topSystem} - Problems`,
           data,
-          backgroundColor: "#f06292",
+          backgroundColor: "#FF0000",
           borderRadius: 4,
         },
       ],
@@ -51,7 +51,7 @@ function renderProblemChart(groupedProblems, topSystem) {
         },
       },
       scales: {
-        y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: "#eee" } },
+        y: { beginAtZero: true, ticks: {  }, grid: { color: "#eee" } },
         x: { ticks: { font: { size: 12 } }, grid: { display: false } },
       },
     },

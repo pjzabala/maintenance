@@ -43,34 +43,35 @@ function renderYearlyTrendChart(filteredData) {
     data: {
       labels: years,
       datasets: [
-        {
-          label: "Preventive",
-          data: preventive,
-          backgroundColor: "#81c784",
-          borderColor: "#66bb6a",
-          borderWidth: 1,
-          borderRadius: 8,
-          borderSkipped: false,
-        },
-        {
-          label: "Corrective",
-          data: corrective,
-          backgroundColor: "#64b5f6",
-          borderColor: "#42a5f5",
-          borderWidth: 1,
-          borderRadius: 8,
-          borderSkipped: false,
-        },
-        {
-          label: "Modification",
-          data: modification,
-          backgroundColor: "#ffb74d",
-          borderColor: "#ffa726",
-          borderWidth: 1,
-          borderRadius: 8,
-          borderSkipped: false,
-        },
-      ],
+  {
+    label: "Preventive",
+    data: preventive,
+    backgroundColor: "#4caf50",      // Green
+    borderColor: "#388e3c",
+    borderWidth: 1,
+    borderRadius: 8,
+    borderSkipped: false,
+  },
+  {
+    label: "Corrective",
+    data: corrective,
+    backgroundColor: "#FF0000",      // Red
+    borderColor: "#d32f2f",
+    borderWidth: 1,
+    borderRadius: 8,
+    borderSkipped: false,
+  },
+  {
+    label: "Modification",
+    data: modification,
+    backgroundColor: "#2196f3",      // Blue
+    borderColor: "#1976d2",
+    borderWidth: 1,
+    borderRadius: 8,
+    borderSkipped: false,
+  },
+]
+
     },
     options: {
       responsive: true,
@@ -118,7 +119,7 @@ function renderYearlyTrendChart(filteredData) {
         },
         y: {
           beginAtZero: true,
-          ticks: { stepSize: 1, font: { family: "monospace", size: 12 } },
+          ticks: { font: { family: "monospace", size: 12 } },
           grid: { color: "#f0f0f0" },
         },
       },

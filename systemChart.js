@@ -50,10 +50,33 @@ function renderGroupedChart(groupedData) {
     data: {
       labels: systems,
       datasets: [
-        { label: "Preventive", data: preventiveData, backgroundColor: "#81c784", borderRadius: 6, borderColor: "#4caf50", borderWidth: 1 },
-        { label: "Corrective", data: correctiveData, backgroundColor: "#64b5f6", borderRadius: 6, borderColor: "#2196f3", borderWidth: 1 },
-        { label: "Modification", data: modificationData, backgroundColor: "#ffb74d", borderRadius: 6, borderColor: "#ff9800", borderWidth: 1 },
-      ]
+  {
+    label: "Preventive",
+    data: preventiveData,
+    backgroundColor: "#4caf50",      // Green fill
+    borderColor: "#388e3c",          // Darker green border
+    borderWidth: 1,
+    borderRadius: 6
+  },
+  {
+    label: "Corrective",
+    data: correctiveData,
+    backgroundColor: "#FF0000",      // Red fill
+    borderColor: "#d32f2f",          // Darker red border
+    borderWidth: 1,
+    borderRadius: 6
+  },
+  {
+    label: "Modification",
+    data: modificationData,
+    backgroundColor: "#2196f3",      // Blue fill
+    borderColor: "#1976d2",          // Darker blue border
+    borderWidth: 1,
+    borderRadius: 6
+  }
+]
+
+
     },
     options: {
       responsive: true,
@@ -66,7 +89,7 @@ function renderGroupedChart(groupedData) {
         },
       },
       scales: {
-        y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: "#eee" } },
+        y: { beginAtZero: true, ticks: {  }, grid: { color: "#eee" } },
         x: { grid: { display: false } },
       },
     },
