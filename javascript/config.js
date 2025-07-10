@@ -281,7 +281,19 @@ const positionMaps = {
     "Concentrated Acid Pump": { x: 160, y: 555 },
   },
   electrical: {
-
+    "51DL": { x: 100, y: 300 },
+    "41DL": { x: 284, y: 300 },
+    "2DL": { x: 640, y: 130 },
+    "40DL": { x: 755, y: 300 },
+    "42DL": { x: 890, y: 300 },
+    "GCB": { x: 1065, y: 300 },
+    "42ZKK": { x: 895, y: 430 },
+    "40ZKK": { x: 760, y: 430 },
+    "402ZKKB": { x: 700, y: 510 },
+    "401ZKK": { x: 600, y: 508 },
+    "41BZK": { x: 410, y: 505 },
+    "43ZKKE": { x: 195, y: 510 },
+    "44ZKKE": { x: 220, y: 585 },
   },
   substation: {
     "Surge Arrester": { x: 305, y: 480 },
@@ -300,7 +312,7 @@ const positionMaps = {
     "Backhoe 2": { x: 660, y: 330 },
     "Loader 1": { x: 275, y: 460 },
     "Loader 2": { x: 660, y: 460 },
-    "Boom Truck": { x: 300, y: 663 },
+    "Boom Truck": { x: 305, y: 658 },
     "Skid Loader": { x: 660, y: 690 },
   },
   switchyard: {
