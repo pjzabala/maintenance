@@ -35,7 +35,8 @@ let currentChart = null;
 let yearlyChart = null;
 
 async function loadCSVData() {
-  const response = await fetch(sheetCSVUrl);
+  const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(sheetCSVUrl);
+  const response = await fetch(proxyUrl);
   const csvText = await response.text();
   const parsed = Papa.parse(csvText, {
     header: true,
