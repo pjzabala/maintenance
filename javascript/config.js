@@ -284,7 +284,13 @@ const positionMaps = {
 
   },
   substation: {
-
+    "Surge Arrester": { x: 305, y: 480 },
+    "Disconnection Switch": { x: 490, y: 460 },
+    "Current Transformer": { x: 568, y: 460 },
+    "SF6": { x: 660, y: 480 },
+    "Main Transformer": { x: 790, y: 470 },
+    "Bust-Duct": { x: 900, y: 500 },
+    "MV Room": { x: 1020, y: 570 },
   },
   "heavy-equipment": {
     "Dump Truck MDT-75": { x: 275, y: 150 },
