@@ -34,6 +34,7 @@ function renderProblemChart(groupedProblems, topSystem) {
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
         title: {
