@@ -7,6 +7,9 @@ body {
   color: #333;
   overflow-x: hidden;
 }
+body {
+  padding-top: 180px; /* Adjust based on header + filters height */
+}
 
 /* === Heading === */
 h1 {
@@ -17,8 +20,25 @@ h1 {
 }
 
 /* === Filters Section === */
+#filters-wrapper {
+  position: fixed;
+  top: 60px; /* adjust to height of header */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  padding: 10px 0;
+}
+
 #filters {
-  margin-bottom: 20px;
+  max-width: 1200px;
+  width: 100%;
+  padding: 20px;
+  background: white;
+  border-radius: 16px;
 }
 
 .filters-container {
@@ -34,7 +54,7 @@ h1 {
   max-width: 1200px;
   box-sizing: border-box;
   align-items: start;
-  top: 80px; /* Adjust depending on your header height */
+  top: 60px; /* Adjust depending on your header height */
   position: sticky;
 }
 
@@ -221,7 +241,7 @@ canvas {
 #yearlyTrendChart,
 #problemChart {
   width: 100% !important;
-  max-height: 500px;
+  max-height: 1000px;
 }
 
 /* === Responsive Layout: Stack on mobile === */

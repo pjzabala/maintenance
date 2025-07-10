@@ -71,51 +71,52 @@
       <h1>DPTPP Maintenance History Records</h1>
 
       <!-- === FILTERS PANEL === -->
-      <div id="filters" class="filters-container">
-        <!-- Row 1 -->
-        <div class="dropdown-wrapper">
-          <button class="dropdown-toggle">System</button>
-          <div class="dropdown" id="filter-system"></div>
-        </div>
-        <div class="dropdown-wrapper">
-          <button class="dropdown-toggle">Equipment</button>
-          <div class="dropdown" id="filter-equipment"></div>
-        </div>
-        <div class="dropdown-wrapper">
-          <button class="dropdown-toggle">Type of Maintenance</button>
-          <div class="dropdown" id="filter-maintenance"></div>
-        </div>
-        <div class="dropdown-wrapper">
-          <button class="dropdown-toggle">Problem/Activity</button>
-          <div class="dropdown" id="filter-problem"></div>
-        </div>
-        <div class="date-range-wrapper">
-          <div class="date-range-row">
-            <label>From:</label>
-            <input type="date" id="filter-date-start" />
-            <label>To:</label>
-            <input type="date" id="filter-date-end" />
+      <div id="filters-wrapper">
+        <div id="filters" class="filters-container">
+          <!-- Row 1 -->
+          <div class="dropdown-wrapper">
+            <button class="dropdown-toggle">System</button>
+            <div class="dropdown" id="filter-system"></div>
+          </div>
+          <div class="dropdown-wrapper">
+            <button class="dropdown-toggle">Equipment</button>
+            <div class="dropdown" id="filter-equipment"></div>
+          </div>
+          <div class="dropdown-wrapper">
+            <button class="dropdown-toggle">Type of Maintenance</button>
+            <div class="dropdown" id="filter-maintenance"></div>
+          </div>
+          <div class="dropdown-wrapper">
+            <button class="dropdown-toggle">Problem/Activity</button>
+            <div class="dropdown" id="filter-problem"></div>
+          </div>
+          <div class="date-range-wrapper">
+            <div class="date-range-row">
+              <label>From:</label>
+              <input type="date" id="filter-date-start" />
+              <label>To:</label>
+              <input type="date" id="filter-date-end" />
+            </div>
+          </div>
+
+          <!-- Row 2 -->
+          <div class="dropdown-wrapper">
+            <button class="dropdown-toggle">Point Section</button>
+            <div class="dropdown" id="filter-section"></div>
+          </div>
+          <div class="dropdown-wrapper">
+            <button class="dropdown-toggle">Year</button>
+            <div class="dropdown" id="filter-year"></div>
+          </div>
+          <div class="dropdown-wrapper">
+            <button class="dropdown-toggle">Quarter</button>
+            <div class="dropdown" id="filter-quarter"></div>
+          </div>
+          <div class="filter-button-wrapper">
+            <button id="clear-filters">Clear Filters</button>
           </div>
         </div>
-
-        <!-- Row 2 -->
-        <div class="dropdown-wrapper">
-          <button class="dropdown-toggle">Point Section</button>
-          <div class="dropdown" id="filter-section"></div>
-        </div>
-        <div class="dropdown-wrapper">
-          <button class="dropdown-toggle">Year</button>
-          <div class="dropdown" id="filter-year"></div>
-        </div>
-        <div class="dropdown-wrapper">
-          <button class="dropdown-toggle">Quarter</button>
-          <div class="dropdown" id="filter-quarter"></div>
-        </div>
-        <div class="filter-button-wrapper">
-          <button id="clear-filters">Clear Filters</button>
-        </div>
       </div>
-
       <!-- === MAIN CHARTS === -->
       <section class="chart-section">
         <div class="chart-container">
