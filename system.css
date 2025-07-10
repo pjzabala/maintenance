@@ -204,6 +204,19 @@ body {
   box-shadow: 0 0 5px #ccc;
   max-height: 600px;
 }
+.search-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.search-filters input {
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 200px;
+}
 
 .table-container.full-table {
   max-height: 93vh;
