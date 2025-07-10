@@ -32,13 +32,22 @@
   position: sticky;
   top: 0;
 }
+.styled-table thead th {
+  position: sticky;
+  top: 70px; /* adjust this to be just under filters */
+  background-color: #0288d1;
+  z-index: 998;
+}
 
 /* === Filters Wrapper Container === */
 #filters-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background-color: #ffffff; /* same as body */
+  padding: 0px 0;
   display: flex;
   justify-content: center;
-  width: 100%;
-  margin-bottom: 20px;
 }
 
 /* === Filters Grid Container === */
