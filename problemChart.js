@@ -1,4 +1,3 @@
-// === problemChart.js ===
 function groupProblemsBySystem(data) {
   const result = {};
   data.forEach((row) => {
@@ -14,9 +13,14 @@ function groupProblemsBySystem(data) {
 function renderProblemChart(groupedProblems, topSystem) {
   const ctx = document.getElementById("problemChart").getContext("2d");
   const problems = groupedProblems[topSystem] || {};
-  const sorted = Object.entries(problems).sort((a, b) => b[1] - a[1]);
+
+  const sorted = Object.entries(problems)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10); // ✅ Limit to top 10 problems
+
   const labels = sorted.map(([problem]) => problem);
   const data = sorted.map(([_, count]) => count);
+
   if (problemChart) problemChart.destroy();
 
   problemChart = new Chart(ctx, {
@@ -51,8 +55,15 @@ function renderProblemChart(groupedProblems, topSystem) {
         },
       },
       scales: {
-        y: { beginAtZero: true, ticks: {  }, grid: { color: "#eee" } },
-        x: { ticks: { font: { size: 12 } }, grid: { display: false } },
+        y: {
+          beginAtZero: true,
+          ticks: {},
+          grid: { color: "#eee" },
+        },
+        x: {
+          ticks: { font: { size: 12 } },
+          grid: { display: false },
+        },
       },
     },
     plugins: [ChartDataLabels],

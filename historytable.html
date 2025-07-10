@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Filtered Maintenance History Table</title>
+    <link rel="stylesheet" href="historytable.css" />
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <header>
+        <h2>Maintenance History Records</h2>
+        <button id="back-to-dashboard">← Back to Dashboard</button>
+      </header>
+
+      <!-- Filters -->
+      <div id="filters-wrapper">
+        <div class="filters-container">
+          <div class="dropdown-wrapper">
+            <div class="dropdown-toggle">System</div>
+            <div class="dropdown" id="filter-system"></div>
+          </div>
+          <div class="dropdown-wrapper">
+            <div class="dropdown-toggle">Equipment</div>
+            <div class="dropdown" id="filter-equipment"></div>
+          </div>
+          <div class="dropdown-wrapper">
+            <div class="dropdown-toggle">Maintenance</div>
+            <div class="dropdown" id="filter-maintenance"></div>
+          </div>
+          <div class="dropdown-wrapper">
+            <div class="dropdown-toggle">Problem/Activity</div>
+            <div class="dropdown" id="filter-problem"></div>
+          </div>
+          <div class="dropdown-wrapper">
+            <div class="dropdown-toggle">Point Section</div>
+            <div class="dropdown" id="filter-section"></div>
+          </div>
+          <div class="dropdown-wrapper">
+            <div class="dropdown-toggle">Year</div>
+            <div class="dropdown" id="filter-year"></div>
+          </div>
+          <div class="dropdown-wrapper">
+            <div class="dropdown-toggle">Quarter</div>
+            <div class="dropdown" id="filter-quarter"></div>
+          </div>
+          <div class="filter-button-wrapper">
+            <button id="clear-filters">Clear Filters</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div id="table-container" style="margin-top: 24px">
+        <p>Loading...</p>
+      </div>
+    </div>
+
+    <script src="historytable.js"></script>
+  </body>
+</html>

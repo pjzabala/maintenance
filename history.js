@@ -173,22 +173,22 @@ function applyFilters(data) {
     const matchEnd = !endDate || rowDate <= new Date(endDate);
 
     let matchQuarter = true;
-if (selectedQuarters.length > 0) {
-  matchQuarter = selectedQuarters.some((q) => {
-    const year = rowDate.getFullYear();
-    const ranges = {
-      Q1: [new Date(year, 0, 1), new Date(year, 2, 31)],    // Jan 1 – Mar 31
-      Q2: [new Date(year, 3, 1), new Date(year, 5, 30)],    // Apr 1 – Jun 30
-      Q3: [new Date(year, 6, 1), new Date(year, 8, 30)],    // Jul 1 – Sep 30
-      Q4: [new Date(year, 9, 1), new Date(year, 11, 31)]    // Oct 1 – Dec 31
-    };
-    const [start, end] = ranges[q] || [];
-    return rowDate >= start && rowDate <= end;
-  });
-}
+    if (selectedQuarters.length > 0) {
+      matchQuarter = selectedQuarters.some((q) => {
+        const year = rowDate.getFullYear();
+        const ranges = {
+          Q1: [new Date(year, 0, 1), new Date(year, 2, 31)],    // Jan 1 – Mar 31
+          Q2: [new Date(year, 3, 1), new Date(year, 5, 30)],    // Apr 1 – Jun 30
+          Q3: [new Date(year, 6, 1), new Date(year, 8, 30)],    // Jul 1 – Sep 30
+          Q4: [new Date(year, 9, 1), new Date(year, 11, 31)]    // Oct 1 – Dec 31
+        };
+        const [start, end] = ranges[q] || [];
+        return rowDate >= start && rowDate <= end;
+      });
+    }
 
 
-    return matchSystem && matchEquipment && matchMaintenance && matchProblem && matchStart && matchEnd && matchQuarter && matchSection &&  matchYear;
+    return matchSystem && matchEquipment && matchMaintenance && matchProblem && matchStart && matchEnd && matchQuarter && matchSection && matchYear;
   });
 }
 
@@ -204,22 +204,60 @@ function updateChart() {
     quarter: getSelectedValues("filter-quarter"),
   };
 
-  const filtered = applyFilters(originalData);
+  const filtered = applyFilters(originalData); // ✅ Declare only once
+
   populateFilters(originalData, selectedFilters);
 
-  // 🔧 1. System Chart
-  const grouped = groupBySystemAndMaintenance(filtered);
-  renderGroupedChart(grouped); // <== This was likely missing
+  // If you're on the dashboard, render the charts
+  if (typeof renderGroupedChart === "function" &&
+    typeof renderYearlyTrendChart === "function" &&
+    typeof renderProblemChart === "function") {
 
-  // 🔧 2. Yearly Chart
-  renderYearlyTrendChart(filtered); // <== This too
+    const grouped = groupBySystemAndMaintenance(filtered);
+    renderGroupedChart(grouped);
 
-  // 🔧 3. Problems Chart
-  const topSystem = Object.entries(grouped)
-    .sort((a, b) => b[1].Preventive - a[1].Preventive)[0]?.[0];
-  const groupedProblems = groupProblemsBySystem(filtered);
-  renderProblemChart(groupedProblems, topSystem);
+    renderYearlyTrendChart(filtered);
+
+    const topSystem = Object.entries(grouped)
+      .sort((a, b) => b[1].Preventive - a[1].Preventive)?.[0]?.[0];
+
+    const groupedProblems = groupProblemsBySystem(filtered);
+    renderProblemChart(groupedProblems, topSystem);
+  }
+
+  // If you're on the table page, render the table
+  if (typeof renderTable === "function") {
+    renderTable(filtered);
+  }
 }
+
+document.getElementById("view-table-btn").addEventListener("click", () => {
+  const params = new URLSearchParams();
+  const filters = {
+    system: getSelectedValues("filter-system"),
+    equipment: getSelectedValues("filter-equipment"),
+    maintenance: getSelectedValues("filter-maintenance"),
+    problem: getSelectedValues("filter-problem"),
+    section: getSelectedValues("filter-section"),
+    year: getSelectedValues("filter-year"),
+    quarter: getSelectedValues("filter-quarter"),
+    start: document.getElementById("filter-date-start").value,
+    end: document.getElementById("filter-date-end").value,
+  };
+
+  Object.entries(filters).forEach(([key, value]) => {
+    if (Array.isArray(value)) {
+      value.forEach((v) => params.append(key, v));
+    } else if (value) {
+      params.set(key, value);
+    }
+  });
+
+
+
+  window.location.href = `historytable.html?${params.toString()}`;
+
+});
 
 
 function clearAllFilters() {
@@ -237,13 +275,13 @@ function clearAllFilters() {
 loadCSVData().then((data) => {
   originalData = data;
   populateFilters(data, {
-  system: [],
-  equipment: [],
-  maintenance: [],
-  problem: [],
-  section: [],
-  year: [],
-});
+    system: [],
+    equipment: [],
+    maintenance: [],
+    problem: [],
+    section: [],
+    year: [],
+  });
   updateChart();
 
   document.getElementById("clear-filters").addEventListener("click", clearAllFilters);
