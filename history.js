@@ -44,287 +44,24 @@ async function loadCSVData() {
   return parsed.data;
 }
 
-function groupBySystemAndMaintenance(data) {
+function groupProblemsBySystem(data) {
   const result = {};
-  data.forEach((entry) => {
-    const system = entry["SYSTEM"] || "SYSTEM";
-    const type = (entry["TYPE OF MAINTENANCE"] || "").toLowerCase();
 
-    if (!result[system]) {
-      result[system] = {
-        Preventive: 0,
-        Corrective: 0,
-        Modification: 0,
-      };
-    }
+  data.forEach((row) => {
+    const system = row["SYSTEM"] || "Unknown System";
+    const problem = row["TYPE OF PROBLEM/ACTIVITY"] || "Unspecified";
 
-    if (type.includes("preventive")) result[system].Preventive++;
-    else if (type.includes("corrective")) result[system].Corrective++;
-    else if (type.includes("modification")) result[system].Modification++;
+    if (!result[system]) result[system] = {};
+    if (!result[system][problem]) result[system][problem] = 0;
+
+    result[system][problem]++;
   });
 
   return result;
 }
 
-function renderGroupedChart(groupedData) {
-  const selectedSystems = getSelectedValues("filter-system");
+let problemChart = null;
 
-  const allData = Object.entries(groupedData)
-    .filter(([system]) => {
-      return selectedSystems.length === 0 || selectedSystems.includes(system);
-    })
-    .map(([system, counts]) => ({
-      system,
-      ...counts,
-      total: counts.Preventive + counts.Corrective + counts.Modification,
-    }));
-
-  // Separate priority systems and others
-  const priority = [];
-  const others = [];
-  const prioritySystems = [
-  "Slag Removal System",
-  "Fly Ash Handling System",
-  "Limestone Handling System",
-  "Combustion System",
-  "Water Treatment System",
-  "Coal Handling System",
-  "Biomass Handling System",
-  "Feedwater System",
-  "Circulating Water System",
-  "Closed Circulating Cooling Water System"
-];
-
-
-  allData.forEach((item) => {
-    if (prioritySystems.includes(item.system)) {
-      priority.push(item);
-    } else {
-      others.push(item);
-    }
-  });
-
-  // Sort priority by Preventive descending
-  priority.sort((a, b) => b.Preventive - a.Preventive);
-
-  // Sort others by Preventive descending
-  others.sort((a, b) => b.Preventive - a.Preventive);
-
-  // Combine and limit to top 10
-  const combined = [...priority, ...others].slice(0, 10);
-
-  const systems = combined.map((item) => item.system);
-  const preventiveData = combined.map((item) => item.Preventive);
-  const correctiveData = combined.map((item) => item.Corrective);
-  const modificationData = combined.map((item) => item.Modification);
-
-  const ctx = document.getElementById("maintenanceChart").getContext("2d");
-  if (currentChart) currentChart.destroy();
-
-  currentChart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: systems,
-      datasets: [
-        {
-          label: "Preventive",
-          data: preventiveData,
-          backgroundColor: "#81c784",
-          borderRadius: 6,
-          borderColor: "#4caf50",
-          borderWidth: 1,
-        },
-        {
-          label: "Corrective",
-          data: correctiveData,
-          backgroundColor: "#64b5f6",
-          borderRadius: 6,
-          borderColor: "#2196f3",
-          borderWidth: 1,
-        },
-        {
-          label: "Modification",
-          data: modificationData,
-          backgroundColor: "#ffb74d",
-          borderRadius: 6,
-          borderColor: "#ff9800",
-          borderWidth: 1,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: "top",
-          labels: {
-            font: { size: 13, family: "monospace" },
-            padding: 10,
-          },
-        },
-        title: {
-          display: true,
-          text: `History Records`,
-          font: { size: 18, family: "Oswald" },
-          padding: { top: 10, bottom: 20 },
-        },
-        datalabels: {
-          color: "#fff",
-          anchor: "center",
-          align: "center",
-          font: {
-            weight: "bold",
-            size: 12,
-            family: "monospace",
-          },
-          formatter: Math.round,
-        },
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: { stepSize: 1 },
-          grid: { color: "#eee" },
-        },
-        x: {
-          grid: { display: false },
-        },
-      },
-    },
-    plugins: [ChartDataLabels]
-  });
-}
-
-
-
-function groupByYearAndMaintenance(data) {
-  const result = {};
-
-  data.forEach((entry) => {
-    const dateStr = entry["DATE STARTED"];
-    const dateObj = new Date(dateStr);
-    const type = (entry["TYPE OF MAINTENANCE"] || "").toLowerCase();
-
-    if (isNaN(dateObj.getTime())) return; // Skip invalid dates
-
-    const year = dateObj.getFullYear();
-
-    if (!result[year]) {
-      result[year] = { Preventive: 0, Corrective: 0, Modification: 0 };
-    }
-
-    if (type.includes("preventive")) result[year].Preventive++;
-    else if (type.includes("corrective")) result[year].Corrective++;
-    else if (type.includes("modification")) result[year].Modification++;
-  });
-
-  return result;
-}
-
-function renderYearlyTrendChart(filteredData) {
-  const selectedYears = getSelectedValues("filter-year");
-  const yearCounts = groupByYearAndMaintenance(filteredData);
-
-  let years = Object.keys(yearCounts).sort();
-  if (selectedYears.length > 0) {
-    years = years.filter((y) => selectedYears.includes(y));
-  }
-
-  const preventive = years.map((y) => yearCounts[y]?.Preventive || 0);
-  const corrective = years.map((y) => yearCounts[y]?.Corrective || 0);
-  const modification = years.map((y) => yearCounts[y]?.Modification || 0);
-
-  const ctx = document.getElementById("yearlyTrendChart").getContext("2d");
-  if (yearlyChart) yearlyChart.destroy();
-
-  yearlyChart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: years,
-      datasets: [
-        {
-          label: "Preventive",
-          data: preventive,
-          backgroundColor: "#81c784",
-          borderColor: "#66bb6a",
-          borderWidth: 1,
-          borderRadius: 8,
-          borderSkipped: false,
-        },
-        {
-          label: "Corrective",
-          data: corrective,
-          backgroundColor: "#64b5f6",
-          borderColor: "#42a5f5",
-          borderWidth: 1,
-          borderRadius: 8,
-          borderSkipped: false,
-        },
-        {
-          label: "Modification",
-          data: modification,
-          backgroundColor: "#ffb74d",
-          borderColor: "#ffa726",
-          borderWidth: 1,
-          borderRadius: 8,
-          borderSkipped: false,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      layout: { padding: 20 },
-      plugins: {
-        legend: {
-          position: "top",
-          labels: {
-            font: { size: 13, family: "monospace" },
-            padding: 10,
-          },
-        },
-        title: {
-          display: true,
-          text:
-            selectedYears.length > 0
-              ? `Maintenance Trend for ${selectedYears.join(", ")}`
-              : "Yearly Maintenance Trend",
-          font: { size: 18, family: "Oswald" },
-          padding: { top: 10, bottom: 20 },
-        },
-        tooltip: {
-          backgroundColor: "#333",
-          bodyFont: { size: 13 },
-          cornerRadius: 6,
-          padding: 10,
-        },
-        datalabels: {
-          color: "#fff", // light text inside bars
-          anchor: "center",
-          align: "center",
-          font: {
-            size: 13,
-            family: "monospace",
-            weight: "bold",
-          },
-          formatter: (value) => (value > 0 ? value : ""),
-        },
-      },
-      scales: {
-        x: {
-          ticks: { font: { family: "monospace", size: 12 } },
-          grid: { display: false },
-        },
-        y: {
-          beginAtZero: true,
-          ticks: { stepSize: 1, font: { family: "monospace", size: 12 } },
-          grid: { color: "#f0f0f0" },
-        },
-      },
-    },
-    plugins: [ChartDataLabels],
-  });
-}
 
 function populateFilters(data, selectedFilters) {
   const systems = new Set();
@@ -354,11 +91,6 @@ function populateFilters(data, selectedFilters) {
   fillSelect("filter-quarter", ["Q1", "Q2", "Q3", "Q4"], selectedFilters.quarter);
 
 }
-
-
-
-
-
 
 function fillSelect(id, values, selected = []) {
   const container = document.getElementById(id);
@@ -468,18 +200,25 @@ function updateChart() {
     problem: getSelectedValues("filter-problem"),
     section: getSelectedValues("filter-section"),
     year: getSelectedValues("filter-year"),
-    quarter: getSelectedValues("filter-quarter"), 
+    quarter: getSelectedValues("filter-quarter"),
   };
 
   const filtered = applyFilters(originalData);
+  populateFilters(originalData, selectedFilters);
 
-  populateFilters(originalData, selectedFilters); // Use originalData, not filtered
+  // 🔧 1. System Chart
   const grouped = groupBySystemAndMaintenance(filtered);
-  renderGroupedChart(grouped);
-  renderYearlyTrendChart(filtered);
+  renderGroupedChart(grouped); // <== This was likely missing
+
+  // 🔧 2. Yearly Chart
+  renderYearlyTrendChart(filtered); // <== This too
+
+  // 🔧 3. Problems Chart
+  const topSystem = Object.entries(grouped)
+    .sort((a, b) => b[1].Preventive - a[1].Preventive)[0]?.[0];
+  const groupedProblems = groupProblemsBySystem(filtered);
+  renderProblemChart(groupedProblems, topSystem);
 }
-
-
 
 
 function clearAllFilters() {

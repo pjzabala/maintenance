@@ -8,6 +8,7 @@ body {
   overflow-x: hidden;
 }
 
+/* === Heading === */
 h1 {
   margin: 20px 0;
   font-size: 32px;
@@ -15,48 +16,66 @@ h1 {
   color: #2c3e50;
 }
 
+/* === Filters Section === */
 #filters {
   margin-bottom: 20px;
 }
 
 .filters-container {
-  background: #ffffff;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: auto auto;
+  gap: 16px;
   padding: 30px;
+  margin: 0 auto 30px auto;
+  background: #ffffff;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  margin: 0 auto 30px auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 16px;
   max-width: 1200px;
-  width: 100%;
   box-sizing: border-box;
   align-items: start;
+  top: 80px; /* Adjust depending on your header height */
+  position: sticky;
 }
 
-.dropdown-toggle {
-  color: #333;
+/* Standard dropdown/button styles */
+
+.date-range-wrapper,
+.filter-button-wrapper {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dropdown-toggle,
+#clear-filters {
+  width: 100%;
   padding: 10px 14px;
-  background: #e0e0e0;
+  font-size: 14px;
   font-family: monospace;
-  border-radius: 30px;
   border: 2px solid #ccc;
+  border-radius: 30px;
+  background: #e0e0e0;
   box-shadow: inset 4px 4px 10px #bcbcbc, inset -4px -4px 10px #ffffff;
   cursor: pointer;
   transition: all 0.2s ease;
-  width: 100%;
   text-align: left;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
+.dropdown-toggle:hover,
+#clear-filters:hover {
+  background-color: #dcdcdc;
+}
+
+/* Dropdown menu styling */
 .dropdown {
   background-color: #fff;
   color: #333;
   border: 1px solid #ccc;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow only */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 10px;
   overflow-y: auto;
   max-height: 250px;
@@ -64,57 +83,46 @@ h1 {
   z-index: 10;
 }
 
+/* Dropdown item styling */
 .dropdown label {
   display: flex;
-  align-items: center;
+  text-align: left;
   padding: 6px 8px;
   font-size: 14px;
-  text-align: left;
   gap: 8px;
   cursor: pointer;
   background-color: white;
-}
-.dropdown-search-wrapper {
-  position: sticky;
-  top: 0;
-  background: white;
-  z-index: 5;
-  padding: 5px;
-  border-bottom: 1px solid #eee;
-}
-
-.dropdown-search {
-  width: 100%;
-  padding: 6px 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-family: monospace;
-  font-size: 14px;
-  box-sizing: border-box;
 }
 
 .dropdown label:hover {
   background-color: #f0f0f0;
 }
-.date-range-group {
-  width: 100%;
+
+/* Date range styling */
+.date-range-wrapper {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  font-family: monospace;
+  width: 100%;
   box-sizing: border-box;
-  align-self: start; /* ✅ Aligns with top of other items */
-  margin: 0;
-  margin-top: -16px;
 }
 
-.date-range-group label {
+.date-range-wrapper label {
   font-size: 14px;
   font-weight: 500;
   color: #444;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 
-.date-range-group input[type="date"] {
+.date-range-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.date-range-row input[type="date"] {
+  flex: 1;
   padding: 8px 10px;
   border: 2px solid #ccc;
   border-radius: 12px;
@@ -123,34 +131,38 @@ h1 {
   box-shadow: inset 2px 2px 5px #d1d1d1, inset -2px -2px 5px #ffffff;
   transition: all 0.2s ease;
   outline: none;
-  width: 100%; /* Full width inside */
   box-sizing: border-box;
 }
 
-.date-range-group input[type="date"]:focus {
-  border-color: #2e86de;
-  box-shadow: 0 0 0 2px rgba(46, 134, 222, 0.2);
+/* Clear Filters Button */
+.filter-button-wrapper {
+  grid-column: span 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: end;
+  height: 100%; /* Align to bottom of cell */
 }
 
-button#clear-filters {
-  padding: 0px 40px;
+#clear-filters {
+  padding: 10px 24px;
+  font-size: 14px;
   background-color: #ffffff;
   font-family: monospace;
-  border-radius: 30px;
+  border-radius: 20px;
   border: 2px solid #878787;
   box-shadow: inset 4px 4px 10px #c7c7c7, inset -4px -4px 10px #b2b2b2;
   cursor: pointer;
   transition: background-color 0.2s;
-  justify-self: end;
-  display: block;
-  margin-left: 425px;
+  width: auto;
+  min-width: 120px;
 }
 
-button#clear-filters:hover {
+#clear-filters:hover {
   background-color: #0080ff;
   color: #fff;
 }
 
+/* === Table === */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -175,14 +187,17 @@ th {
   color: #333;
 }
 
+/* === Canvas === */
 canvas {
   max-width: 100%;
   height: auto;
   display: block;
 }
 
+/* === Chart Containers === */
 .chart-container,
-.yearly-trend-container {
+.yearly-trend-container,
+.problem-chart-container {
   background: #ffffff;
   padding: 25px 30px;
   margin: 30px auto;
@@ -190,8 +205,8 @@ canvas {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   max-width: 1200px;
   box-sizing: border-box;
-  text-align: center;
   height: 600px;
+  text-align: center;
 }
 
 .chart-container h3,
@@ -203,7 +218,21 @@ canvas {
 }
 
 #maintenanceChart,
-#yearlyTrendChart {
+#yearlyTrendChart,
+#problemChart {
   width: 100% !important;
   max-height: 500px;
+}
+
+/* === Responsive Layout: Stack on mobile === */
+@media (max-width: 900px) {
+  .filters-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .filters-container {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }

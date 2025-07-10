@@ -70,82 +70,71 @@
     <div class="dashboard-container">
       <h1>DPTPP Maintenance History Records</h1>
 
+      <!-- === FILTERS PANEL === -->
       <div id="filters" class="filters-container">
+        <!-- Row 1 -->
         <div class="dropdown-wrapper">
-          <div class="custom-dropdown" id="filter-system-wrapper">
-            <button class="dropdown-toggle">System</button>
-            <div class="dropdown" id="filter-system"></div>
+          <button class="dropdown-toggle">System</button>
+          <div class="dropdown" id="filter-system"></div>
+        </div>
+        <div class="dropdown-wrapper">
+          <button class="dropdown-toggle">Equipment</button>
+          <div class="dropdown" id="filter-equipment"></div>
+        </div>
+        <div class="dropdown-wrapper">
+          <button class="dropdown-toggle">Type of Maintenance</button>
+          <div class="dropdown" id="filter-maintenance"></div>
+        </div>
+        <div class="dropdown-wrapper">
+          <button class="dropdown-toggle">Problem/Activity</button>
+          <div class="dropdown" id="filter-problem"></div>
+        </div>
+        <div class="date-range-wrapper">
+          <div class="date-range-row">
+            <label>From:</label>
+            <input type="date" id="filter-date-start" />
+            <label>To:</label>
+            <input type="date" id="filter-date-end" />
           </div>
         </div>
 
+        <!-- Row 2 -->
         <div class="dropdown-wrapper">
-          <div class="custom-dropdown" id="filter-equipment-wrapper">
-            <button class="dropdown-toggle">Equipment</button>
-            <div class="dropdown" id="filter-equipment"></div>
-          </div>
+          <button class="dropdown-toggle">Point Section</button>
+          <div class="dropdown" id="filter-section"></div>
         </div>
-
         <div class="dropdown-wrapper">
-          <div class="custom-dropdown" id="filter-maintenance-wrapper">
-            <button class="dropdown-toggle" style="font-size: 12px">
-              Type of Maintenance
-            </button>
-            <div class="dropdown" id="filter-maintenance"></div>
-          </div>
+          <button class="dropdown-toggle">Year</button>
+          <div class="dropdown" id="filter-year"></div>
         </div>
-
         <div class="dropdown-wrapper">
-          <div class="custom-dropdown" id="filter-problem-wrapper">
-            <button class="dropdown-toggle">Problem/Activity</button>
-            <div class="dropdown" id="filter-problem"></div>
-          </div>
+          <button class="dropdown-toggle">Quarter</button>
+          <div class="dropdown" id="filter-quarter"></div>
         </div>
-
-        <div class="date-range-group">
-          <span style="font-size: 10px">From:</span>
-          <input type="date" id="filter-date-start" />
-        </div>
-        <div class="date-range-group">
-          <span style="font-size: 10px">To:</span>
-          <input type="date" id="filter-date-end" />
-        </div>
-
-        <div class="dropdown-wrapper">
-          <div class="custom-dropdown" id="filter-section-wrapper">
-            <button class="dropdown-toggle">Point Section</button>
-            <div class="dropdown" id="filter-section"></div>
-          </div>
-        </div>
-
-        <div class="dropdown-wrapper">
-          <div class="custom-dropdown" id="filter-year-wrapper">
-            <button class="dropdown-toggle">Year</button>
-            <div class="dropdown" id="filter-year"></div>
-          </div>
-        </div>
-
-        <div class="dropdown-wrapper">
-          <div class="custom-dropdown" id="filter-quarter-wrapper">
-            <button class="dropdown-toggle">Quarter</button>
-            <div class="dropdown" id="filter-quarter"></div>
-          </div>
-        </div>
-
         <div class="filter-button-wrapper">
           <button id="clear-filters">Clear Filters</button>
         </div>
       </div>
 
-      <!-- Bar Chart -->
-      <div class="chart-container">
-        <canvas id="maintenanceChart"></canvas>
-      </div>
+      <!-- === MAIN CHARTS === -->
+      <section class="chart-section">
+        <div class="chart-container">
+          <canvas id="maintenanceChart"></canvas>
+        </div>
 
-      <!-- Yearly Trend Chart -->
-      <div class="yearly-trend-container">
-        <canvas id="yearlyTrendChart"></canvas>
-      </div>
+        <div class="yearly-trend-container">
+          <canvas id="yearlyTrendChart"></canvas>
+        </div>
+
+        <div class="problem-chart-container">
+          <canvas id="problemChart" height="400"></canvas>
+        </div>
+      </section>
     </div>
+
+    <script src="systemChart.js"></script>
+    <script src="yearlyChart.js"></script>
+    <script src="problemChart.js"></script>
     <script src="history.js"></script>
 
     <!-- FOOTER -->
