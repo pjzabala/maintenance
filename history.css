@@ -25,7 +25,7 @@ h1 {
   top: 60px; /* adjust to height of header */
   left: 50%;
   transform: translateX(-50%);
-  z-index: 999;
+  z-index: 998;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -54,7 +54,7 @@ h1 {
   max-width: 1200px;
   box-sizing: border-box;
   align-items: start;
-  top: 60px; /* Adjust depending on your header height */
+  /* Adjust depending on your header height */
   position: sticky;
 }
 
