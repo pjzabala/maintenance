@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Planning Request Monitoring</title>
+    <link rel="stylesheet" href="prm.css" />
+  </head>
+  <body class="fade-in">
+    <div class="header">
+      <h2>📋Planning Request Monitoring</h2>
+    </div>
+    <button onclick="goBack()" class="back-button">← Back</button>
+
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="🔍 Search..."
+      onkeyup="filterTable()"
+    />
+
+    <table id="requestTable">
+      <thead>
+        <tr id="tableHeader"></tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="prm.js"></script>
+  </body>
+</html>

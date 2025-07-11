@@ -5,7 +5,31 @@ html {
   font-family: "Oswald", sans-serif;
   overflow-x: hidden;
 }
+.fade-in {
+  animation: fadeIn 0.8s ease-in;
+}
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-out {
+  animation: fadeOut 0.3s ease-in forwards;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
 html {
   scroll-behavior: smooth;
 }
@@ -139,6 +163,7 @@ html {
   border-radius: 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   margin: 60px auto;
+  margin-bottom: 500px;
   max-width: 1200px;
   padding: 40px 60px;
   color: white;

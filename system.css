@@ -378,6 +378,7 @@ body {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
   transition: transform 0.3s ease;
   display: block;
+  object-fit: contain;
 }
 #image-modal-img:hover {
   transform: scale(3);
