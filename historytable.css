@@ -18,6 +18,7 @@
   border-collapse: collapse;
   font-family: "Segoe UI", sans-serif;
   margin-top: 16px;
+  font-size: 11px;
 }
 
 .styled-table th,
