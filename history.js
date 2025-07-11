@@ -35,8 +35,7 @@ let currentChart = null;
 let yearlyChart = null;
 
 async function loadCSVData() {
-  const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(sheetCSVUrl);
-  const response = await fetch(proxyUrl);
+  const response = await fetch(sheetCSVUrl);
   const csvText = await response.text();
   const parsed = Papa.parse(csvText, {
     header: true,
@@ -177,21 +176,19 @@ function applyFilters(data) {
       matchQuarter = selectedQuarters.some((q) => {
         const year = rowDate.getFullYear();
         const ranges = {
-          Q1: [new Date(year, 0, 1), new Date(year, 2, 31)],    // Jan 1 – Mar 31
-          Q2: [new Date(year, 3, 1), new Date(year, 5, 30)],    // Apr 1 – Jun 30
-          Q3: [new Date(year, 6, 1), new Date(year, 8, 30)],    // Jul 1 – Sep 30
-          Q4: [new Date(year, 9, 1), new Date(year, 11, 31)]    // Oct 1 – Dec 31
+          Q1: [new Date(year, 0, 1), new Date(year, 2, 31)],
+          Q2: [new Date(year, 3, 1), new Date(year, 5, 30)],
+          Q3: [new Date(year, 6, 1), new Date(year, 8, 30)],
+          Q4: [new Date(year, 9, 1), new Date(year, 11, 31)]
         };
         const [start, end] = ranges[q] || [];
         return rowDate >= start && rowDate <= end;
       });
     }
 
-
     return matchSystem && matchEquipment && matchMaintenance && matchProblem && matchStart && matchEnd && matchQuarter && matchSection && matchYear;
   });
 }
-
 
 function updateChart() {
   const selectedFilters = {
@@ -204,11 +201,10 @@ function updateChart() {
     quarter: getSelectedValues("filter-quarter"),
   };
 
-  const filtered = applyFilters(originalData); // ✅ Declare only once
+  const filtered = applyFilters(originalData);
 
   populateFilters(originalData, selectedFilters);
 
-  // If you're on the dashboard, render the charts
   if (typeof renderGroupedChart === "function" &&
     typeof renderYearlyTrendChart === "function" &&
     typeof renderProblemChart === "function") {
@@ -225,7 +221,6 @@ function updateChart() {
     renderProblemChart(groupedProblems, topSystem);
   }
 
-  // If you're on the table page, render the table
   if (typeof renderTable === "function") {
     renderTable(filtered);
   }
@@ -253,12 +248,8 @@ document.getElementById("view-table-btn").addEventListener("click", () => {
     }
   });
 
-
-
   window.location.href = `historytable.html?${params.toString()}`;
-
 });
-
 
 function clearAllFilters() {
   document.querySelectorAll(".dropdown input[type='checkbox']").forEach((checkbox) => {
@@ -270,7 +261,6 @@ function clearAllFilters() {
 
   updateChart();
 }
-
 
 loadCSVData().then((data) => {
   originalData = data;
