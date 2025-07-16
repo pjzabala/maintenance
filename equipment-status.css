@@ -190,3 +190,5 @@ body.equipment-status-page .dropdown p:hover {
   height: 550px;
   margin: 0 auto;
 }
+
+@media (forced-colors: active)
